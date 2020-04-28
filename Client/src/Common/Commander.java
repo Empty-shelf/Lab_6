@@ -1,6 +1,6 @@
 package Common;
 
-import Connection.Sender;
+import static Work.ClientMain.sender;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,9 +16,8 @@ public class Commander {
     private ArrayList<String> rec;
 
     private CommandCreator creator = new CommandCreator();
-    private Sender sender = new Sender();
 
-    void interactiveMod() {
+    public void interactiveMod() {
         System.out.println("> Ready for work");
         try (Scanner commandReader = new Scanner(System.in)) {
             while (!userCommand.equals("exit")) {

@@ -1,10 +1,10 @@
 package Commands;
 
-import Common.ICommand;
+import Common.ACommand;
 
-public class PrintUniqueDistance implements ICommand {
+public class PrintUniqueDistance extends ACommand {
     @Override
     public void execute() {
-
+        manager.print_unique_distance();
     }
 }

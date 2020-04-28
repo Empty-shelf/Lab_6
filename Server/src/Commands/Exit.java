@@ -1,10 +1,10 @@
 package Commands;
 
-import Common.ICommand;
+import Common.ACommand;
 
-public class Exit implements ICommand {
+public class Exit extends ACommand {
     @Override
     public void execute() {
-
+        manager.exit();
     }
 }

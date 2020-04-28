@@ -9,6 +9,8 @@ public class CommandShell implements Serializable{
     private int secondArg;
     private String thirdArg;
 
+    public CommandShell(){};
+
     CommandShell(String name, Serializable firstArg){
         this.name = name;
         this.firstArg = firstArg;

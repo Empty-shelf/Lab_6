@@ -1,10 +1,10 @@
 package Commands;
 
-import Common.ICommand;
+import Common.ACommand;
 
-public class Clear implements ICommand {
+public class Clear extends ACommand {
     @Override
     public void execute() {
-
+        manager.clear();
     }
 }

@@ -1,10 +1,10 @@
 package Commands;
 
-import Common.ICommand;
+import Common.ACommand;
 
-public class Help implements ICommand {
+public class Help extends ACommand {
     @Override
     public void execute() {
-
+        manager.help();
     }
 }

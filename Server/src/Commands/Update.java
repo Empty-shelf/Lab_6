@@ -1,10 +1,12 @@
 package Commands;
 
-import Common.ICommand;
+import Collection.Route;
+import Common.ACommand;
 
-public class Update implements ICommand {
+public class Update extends ACommand {
+    Route arg;
     @Override
     public void execute() {
-        
+        manager.update(arg);
     }
 }
