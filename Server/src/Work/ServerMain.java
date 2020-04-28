@@ -15,9 +15,9 @@ public class ServerMain {
 
     public static void main(String[] args) {
         Manager manager = new Manager("Coll_Path");
-        terminal = new Terminal(args);
-        terminal.start();
-        askServerer();
+       // terminal = new Terminal(args);
+       // terminal.start();
+       // askServerer();
 
     }
 
