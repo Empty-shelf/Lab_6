@@ -1,4 +1,10 @@
 package Commands;
 
-public class ExecuteScript {
+import Common.ICommand;
+
+public class ExecuteScript implements ICommand {
+    @Override
+    public void execute() {
+
+    }
 }

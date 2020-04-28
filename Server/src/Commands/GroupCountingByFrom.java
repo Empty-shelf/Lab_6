@@ -1,4 +1,10 @@
 package Commands;
 
-public class GroupCountingByFrom {
+import Common.ICommand;
+
+public class GroupCountingByFrom implements ICommand {
+    @Override
+    public void execute() {
+
+    }
 }

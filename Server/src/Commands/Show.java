@@ -1,4 +1,10 @@
 package Commands;
 
-public class Show {
+import Common.ICommand;
+
+public class Show implements ICommand {
+    @Override
+    public void execute() {
+
+    }
 }

@@ -1,4 +1,10 @@
 package Commands;
 
-public class AddIfMin {
+import Common.ICommand;
+
+public class AddIfMin implements ICommand {
+    @Override
+    public void execute() {
+
+    }
 }

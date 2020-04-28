@@ -1,4 +1,10 @@
 package Commands;
 
-public class Clear {
+import Common.ICommand;
+
+public class Clear implements ICommand {
+    @Override
+    public void execute() {
+
+    }
 }

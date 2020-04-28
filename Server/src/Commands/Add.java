@@ -1,4 +1,10 @@
 package Commands;
 
-public class Add {
+import Common.ICommand;
+
+public class Add implements ICommand {
+    @Override
+    public void execute() {
+
+    }
 }
