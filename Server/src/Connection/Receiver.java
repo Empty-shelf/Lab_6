@@ -18,7 +18,7 @@ public class Receiver {
         contact = contact;
     }
 
-    public CommandShell receive() throws IOException {
+    public CommandShell receive(){
         DatagramChannel datach = contact.getChannel();
         ByteBuffer bbf = ByteBuffer.wrap(bytes);
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -27,9 +27,9 @@ public class Receiver {
             bbf.clear();
             datach.read(bbf);
             ois = new ObjectInputStream(bais);
-            CommandShell com = (CommandShell) ois.readObject();
-            return com;
-        } catch (ClassNotFoundException e) {
+            CommandShell command = (CommandShell) ois.readObject();
+            return command;
+        } catch (IOException | ClassNotFoundException e) {
             return null;
         }
     }

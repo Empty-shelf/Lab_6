@@ -1,7 +1,6 @@
 package Connection;
 
 import Common.CommandShell;
-
 import java.io.IOException;
 import java.net.*;
 
@@ -25,19 +24,18 @@ public class Contact {
         socket = new DatagramSocket();
     }
 
-    public boolean setContact(){
-        byte [] bytes = {1,2,3};
-        CommandShell com = new CommandShell();
-        DatagramPacket packet = new DatagramPacket(bytes,bytes.length,addr);
+ /*   public boolean setContact(){
+        byte [] buf = {1,2,3};
+        DatagramPacket packet1 = new DatagramPacket(buf,buf.length,addr);
         try {
-            socket.send(packet);
-            for(byte b: bytes){
+            socket.send(packet1);
+            for(byte b: buf){
                 b = 0;
             }
-            DatagramPacket dp = new DatagramPacket(bytes,bytes.length);
+            DatagramPacket packet2 = new DatagramPacket(buf,buf.length);
             socket.setSoTimeout(1000);
             try{
-                socket.receive(dp);
+                socket.receive(packet2);
                 socket.connect(addr);
                 return true;
             }catch (SocketTimeoutException e){
@@ -47,5 +45,7 @@ public class Contact {
             e.printStackTrace();
             return false;
         }
-    }
+        }
+  */
 }
+

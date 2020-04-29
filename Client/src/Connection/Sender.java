@@ -17,17 +17,17 @@ public class Sender {
         contact = cont;
     }
 
-    private byte bytes[] = new byte[32*1024];
+    private byte buf1[] = new byte[32*1024];
 
-    byte buf[];
+    byte buf2[];
     public boolean send(CommandShell command){
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(command);
-            buf = baos.toByteArray();
+            buf2 = baos.toByteArray();
             baos.reset();
-            return sendData(buf);
+            return sendData(buf2);
 
         }catch (IOException e) {
             System.out.println("Serialization error");
@@ -38,7 +38,7 @@ public class Sender {
     boolean sendData(byte[] b){
         DatagramSocket dataSock = contact.getSock();
         SocketAddress sockAddr = contact.getAddr();
-        DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length, sockAddr);
+        DatagramPacket datagramPacket = new DatagramPacket(buf1, buf1.length, sockAddr);
         try {
             dataSock.send(datagramPacket);
             System.out.println("Send");

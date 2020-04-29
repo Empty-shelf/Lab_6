@@ -18,35 +18,19 @@ public class ClientMain {
 
         try {
             contact = new Contact(1234, "Localhost");
-            System.out.println("Contact with server: " + contact.setContact());
         } catch (SocketException e) {
             e.printStackTrace();
         }
+
         receiver = new Receiver(contact);
         sender = new Sender(contact);
         startWorking();
     }
-    public static boolean check(){
 
-        sender.send(new CommandShell());
-        CommandShell command = null;
-        try {
-            command = receiver.receive();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            return false;
-        }
-        if(command != null){
-            System.out.println(command.getName());
-            return true;
-        }
-        return false;
-    }
 
     public static void startWorking(){
-        Commander term = new Commander();
-        term.interactiveMod();
+        Commander commander = new Commander();
+        commander.interactiveMod();
     }
 
        /* try {

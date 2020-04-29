@@ -15,15 +15,15 @@ public class Receiver {
     }
 
     public CommandShell receive() throws IOException {
-        byte bytes[] = new byte[32 * 1024];
-        DatagramPacket packetIn = new DatagramPacket(bytes, bytes.length);
+        byte buf[] = new byte[32 * 1024];
+        DatagramPacket packetIn = new DatagramPacket(buf, buf.length);
         try {
             contact.getSock().receive(packetIn);
-            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            ByteArrayInputStream bais = new ByteArrayInputStream(buf);
             ObjectInputStream ois = new ObjectInputStream(bais);
-            CommandShell com = (CommandShell) ois.readObject();
+            CommandShell command = (CommandShell) ois.readObject();
             System.out.println("Received");
-            return com;
+            return command;
         } catch (ClassNotFoundException e) {
             System.out.println("Bad command received");
             return null;

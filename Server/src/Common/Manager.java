@@ -1,6 +1,7 @@
 package Common;
 
 import Collection.*;
+import Commands.Add;
 
 import java.io.*;
 import java.util.*;
@@ -38,6 +39,15 @@ public class Manager {
         }
         dateOfCreation = new Date();
         read();
+    }
+
+    public void start(CommandShell command){
+        try {
+            if (command == null) throw new IOException();
+        }catch (IOException e){
+            System.out.println("Bad command received");
+        }
+        if (command.getName().equals("add")) ACommand com = new Add(command.getFirstArg());
     }
 
 

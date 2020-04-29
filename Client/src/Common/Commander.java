@@ -1,7 +1,6 @@
 package Common;
 
 import static Work.ClientMain.sender;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class Commander {
                         finalUserCommand[0].equals("print_unique_distance") ||
                         finalUserCommand[0].equals("remove_head") || finalUserCommand[0].equals("add_if_min") ||
                         finalUserCommand[0].equals("history")) sender.send(creator.create(finalUserCommand[0]));
-                if (finalUserCommand[0].equals("update")) {
+                else if (finalUserCommand[0].equals("update")) {
                     try {
                         int id = Integer.parseInt(finalUserCommand[1].trim());
                         sender.send(creator.create(finalUserCommand[0], id));
@@ -39,7 +38,7 @@ public class Commander {
                         System.out.println("> Input error (id have to be an integer)");
                     }
                 }
-                if ( finalUserCommand[0].equals("remove_by_id")) {
+                else if ( finalUserCommand[0].equals("remove_by_id")) {
                     try {
                         int i = Integer.parseInt(finalUserCommand[1].trim());
                         sender.send(creator.create(finalUserCommand[0], i));
@@ -47,10 +46,10 @@ public class Commander {
                         System.out.println("> Input error (id have to be an integer)");
                     }
                 }
-                if (finalUserCommand[0].equals("filter_contains_name")) {
+                else if (finalUserCommand[0].equals("filter_contains_name")) {
                     sender.send(creator.create(finalUserCommand[0], finalUserCommand[1].trim()));
                 }
-                if (finalUserCommand[0].equals("execute_script")) script(finalUserCommand[1].trim());
+                else if (finalUserCommand[0].equals("execute_script")) script(finalUserCommand[1].trim());
                 else System.out.println("> Unidentified command - input 'help' for reference");
             }
         } catch (IndexOutOfBoundsException e) {
@@ -92,7 +91,7 @@ public class Commander {
                             script.get(j)[0].equals("remove_head") || script.get(j)[0].equals("add_if_min") ||
                             script.get(j)[0].equals("history"))
                         sender.send(creator.create(script.get(j)[0], j, script));
-                    if (script.get(j)[0].equals("update")){
+                    else if (script.get(j)[0].equals("update")){
                         try {
                             int id = Integer.parseInt(script.get(j)[1].trim());
                             sender.send(creator.create(finalUserCommand[0], j, script));
@@ -100,7 +99,7 @@ public class Commander {
                             System.out.println("> Input error (id have to be an integer)");
                         }
                     }
-                    if (script.get(j)[0].equals("remove_by_id"))
+                    else if (script.get(j)[0].equals("remove_by_id"))
                          try {
                              int k = Integer.parseInt(script.get(j)[1].trim());
                              sender.send(creator.create(script.get(j)[0], k));
@@ -108,12 +107,12 @@ public class Commander {
                              System.out.println("> Input error (id have to be an integer)");
                          }
 
-                    if (script.get(j)[0].equals("execute_script")) script(finalUserCommand[1].trim());
-                    if (script.get(j)[0].equals("filter_contains_name"))
+                    else if (script.get(j)[0].equals("execute_script")) script(finalUserCommand[1].trim());
+                    else if (script.get(j)[0].equals("filter_contains_name"))
                         sender.send(creator.create(finalUserCommand[0], finalUserCommand[1].trim()));
-                    if (script.get(j)[0].equals("add") || script.get(j)[0].equals("add_if_min") ||
-                                script.get(j)[0].equals("update")) j+=10;
                     else System.out.println("> Unidentified command");
+                    if (script.get(j)[0].equals("add") || script.get(j)[0].equals("add_if_min") ||
+                            script.get(j)[0].equals("update")) j+=10;
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("> Missing argument");
                     rec.clear();
