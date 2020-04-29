@@ -1,11 +1,15 @@
 package Commands;
 
-import Common.ACommand;
-
 public class RemoveById extends ACommand {
     int arg;
+    private String mess;
     @Override
-    public void execute() {
+    public void setMess(String mess) {
+        this.mess = mess;
+    }
+    @Override
+    public String execute() {
         manager.remove_by_id(arg);
+        return null;
     }
 }

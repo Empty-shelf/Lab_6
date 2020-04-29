@@ -1,6 +1,5 @@
 package Work;
 
-import Common.Commander;
 import Common.Manager;
 import Connection.*;
 
@@ -15,8 +14,8 @@ public class ServerMain {
     public static Receiver receiver;
 
     public static void main(String[] args) {
-        Manager manager = new Manager("Coll_Path");
-        manager.start(receiver.receive());
+        Commander commander =  new Commander(new Manager("Coll_Path"));
+        commander.start(receiver.receive());
     }
 
     public static boolean setContact(){

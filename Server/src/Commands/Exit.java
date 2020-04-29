@@ -1,10 +1,14 @@
 package Commands;
 
-import Common.ACommand;
-
 public class Exit extends ACommand {
+    private String mess;
     @Override
-    public void execute() {
+    public void setMess(String mess) {
+        this.mess = mess;
+    }
+    @Override
+    public String execute() {
         manager.exit();
+        return null;
     }
 }

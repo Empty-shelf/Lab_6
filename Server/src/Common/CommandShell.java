@@ -34,7 +34,7 @@ public class CommandShell implements Serializable{
     }
 
     public String getName(){return this.name;}
-    public Serializable getFirstArg(){return this.firstArg;}
+    public Route getFirstArg(){return this.firstArg;}
     public int getSecondArg(){return this.secondArg;}
     public String getThirdArg(){return this.thirdArg;}
 

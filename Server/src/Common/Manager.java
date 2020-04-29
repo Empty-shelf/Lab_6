@@ -2,6 +2,7 @@ package Common;
 
 import Collection.*;
 import Commands.Add;
+import Commands.AddIfMin;
 
 import java.io.*;
 import java.util.*;
@@ -40,16 +41,6 @@ public class Manager {
         dateOfCreation = new Date();
         read();
     }
-
-    public void start(CommandShell command){
-        try {
-            if (command == null) throw new IOException();
-        }catch (IOException e){
-            System.out.println("Bad command received");
-        }
-        if (command.getName().equals("add")) ACommand com = new Add(command.getFirstArg());
-    }
-
 
     /**
      * Чтение файла, добавление элементов в коллекцию
@@ -175,10 +166,10 @@ public class Manager {
     /**
      * Добавление нового элемента в коллекцию
      */
-    public void add(Route route) {
+    public String add(Route route) {
         ways.add(route);
         sort();
-        System.out.println("> Element added");
+        return "> Element added";
     }
 
     /**
@@ -279,16 +270,16 @@ public class Manager {
     /**
      * Добавление нового элемента в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции
      */
-    public void add_if_min(Route route) {
+    public String add_if_min(Route route) {
         try {
             if (ways.isEmpty()) throw new NoSuchElementException();
             if (ways.peekFirst().compareTo(route) > 0) {
                 ways.addFirst(route);
-                System.out.println("> Element added");
+                return "> Element added";
             }
-            else System.out.println("> Not minimal");
+            else return "> Not minimal";
         } catch (NoSuchElementException e) {
-            System.out.println("> Collection is empty");
+            return "> Collection is empty";
         }
     }
 

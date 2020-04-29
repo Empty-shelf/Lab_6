@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public class CommandShell implements Serializable{
 
-    private String mess;
     private String name;
     private Route firstArg;
     private int secondArg;

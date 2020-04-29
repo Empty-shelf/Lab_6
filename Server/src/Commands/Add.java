@@ -1,15 +1,21 @@
 package Commands;
 
 import Collection.Route;
-import Common.ACommand;
 
 public class Add extends ACommand {
     Route arg;
-    Add(Route arg){
+
+    public Add(String name, Route arg){
+        this.name = name;
         this.arg = arg;
     }
     @Override
-    public void execute() {
-        manager.add(arg);
+    public String execute() {
+        return manager.add(arg);
+    }
+
+    @Override
+    public void setMess(String mess) {
+       this.mess = mess;
     }
 }
