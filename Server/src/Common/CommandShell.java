@@ -3,14 +3,19 @@ package Common;
 import Collection.Route;
 
 import java.io.Serializable;
+import java.util.ArrayDeque;
 
 public class CommandShell implements Serializable{
 
-    private String mess;
+    private ArrayDeque<String> mess;
     private String name;
     private Route firstArg;
     private int secondArg;
     private String thirdArg;
+
+    public void setMess(ArrayDeque<String> answer){
+        this.mess = answer;
+    }
 
     public CommandShell(){};
 

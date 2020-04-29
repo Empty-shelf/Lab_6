@@ -4,8 +4,6 @@ import Common.Manager;
 import Connection.*;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.Scanner;
 
 public class ServerMain {
 
@@ -15,6 +13,7 @@ public class ServerMain {
 
     public static void main(String[] args) {
         Commander commander =  new Commander(new Manager("Coll_Path"));
+        setContact();
         commander.start(receiver.receive());
     }
 

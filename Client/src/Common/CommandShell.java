@@ -3,13 +3,20 @@ package Common;
 import Collection.Route;
 
 import java.io.Serializable;
+import java.util.ArrayDeque;
+
 
 public class CommandShell implements Serializable{
 
+    private ArrayDeque<String> mess;
     private String name;
     private Route firstArg;
     private int secondArg;
     private String thirdArg;
+
+    public void setMess(ArrayDeque<String> answer){
+        this.mess = answer;
+    }
 
     public CommandShell(){};
 
@@ -33,7 +40,7 @@ public class CommandShell implements Serializable{
     }
 
     public String getName(){return this.name;}
-    public Serializable getFirstArg(){return this.firstArg;}
+    public Route getFirstArg(){return this.firstArg;}
     public int getSecondArg(){return this.secondArg;}
     public String getThirdArg(){return this.thirdArg;}
 
@@ -47,3 +54,4 @@ public class CommandShell implements Serializable{
     public void setSecondArg(int secondArg) {this.secondArg = secondArg;}
     public void setThirdArg(String thirdArg) {this.thirdArg = thirdArg;}
 }
+

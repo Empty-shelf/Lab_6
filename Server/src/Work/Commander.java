@@ -1,11 +1,12 @@
 package Work;
 
-
 import Commands.*;
 import Common.CommandShell;
 import Common.Manager;
 
 import java.io.IOException;
+
+import static Work.ServerMain.sender;
 
 public class Commander {
 
@@ -24,23 +25,28 @@ public class Commander {
         switch (command.getName()) {
             case "add":
                 Add add = new Add(command.getName(), command.getFirstArg());
-                add.setMess(add.execute());
+                command.setMess(add.execute());
+                manager.clearMess();
                 manager.addToHistory(command.getName());
+                sender.send(command);
                 break;
             case "add_if_min":
                 AddIfMin addIfMin = new AddIfMin(command.getName(), command.getFirstArg());
-                addIfMin.setMess(addIfMin.execute());
+                command.setMess(addIfMin.execute());
+                manager.clearMess();
                 manager.addToHistory(command.getName());
+                sender.send(command);
                 break;
             case "clear":
                 Clear clear = new Clear(command.getName());
-                clear.setMess(clear.execute());
+                command.setMess(clear.execute());
+                manager.clearMess();
                 manager.addToHistory(command.getName());
+                sender.send(command);
                 break;
             case "exit":
                 Exit exit = new Exit(command.getName());
                 exit.execute();
-                manager.addToHistory(command.getName());
                 break;
             case "filter_contains_name":
                 FilterContainsName filter = new FilterContainsName(command.getName(), command.getThirdArg());
