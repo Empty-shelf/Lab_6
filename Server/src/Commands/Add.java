@@ -4,6 +4,7 @@ import Collection.Route;
 
 public class Add extends ACommand {
     Route arg;
+    String mess;
 
     public Add(String name, Route arg){
         this.name = name;
@@ -14,7 +15,6 @@ public class Add extends ACommand {
         return manager.add(arg);
     }
 
-    @Override
     public void setMess(String mess) {
        this.mess = mess;
     }

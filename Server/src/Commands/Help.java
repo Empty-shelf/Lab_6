@@ -1,11 +1,17 @@
 package Commands;
 
 public class Help extends ACommand {
-    private String mess;
-    @Override
-    public void setMess(String mess) {
-        this.mess = mess;
+
+    private String [] answer;
+
+    Help(String name){
+        this.name = name;
     }
+
+    void setAnswer(String[] answer){
+        this.answer = answer;
+    }
+
     @Override
     public String execute() {
         manager.help();

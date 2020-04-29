@@ -140,10 +140,12 @@ public class Manager {
     /**
      * Вывод справки по доступным командам
      */
-    public void help() {
+    public String [] help() {
+        String [] mess = new String [15];
         for (int i = 0; i < 16; i++) {
-            System.out.println("> " + commands[i][0] + " : " + commands[i][1]);
+            mess [i] = "> " + commands[i][0] + " : " + commands[i][1];
         }
+        return mess;
     }
 
     /**
@@ -215,9 +217,9 @@ public class Manager {
     /**
      * Очистка коллекции
      */
-    public void clear() {
+    public String clear() {
         ways.clear();
-        System.out.println("> Collection cleared");
+        return "> Collection cleared";
     }
 
     /**
@@ -250,7 +252,8 @@ public class Manager {
     /**
      * Завершение программы без сохранения в файл
      */
-    public void exit() {
+    public void   exit() {
+        save();
         System.exit(0);
     }
 
@@ -277,9 +280,9 @@ public class Manager {
                 ways.addFirst(route);
                 return "> Element added";
             }
-            else return "> Not minimal";
+            else return "> Element not minimal";
         } catch (NoSuchElementException e) {
-            return "> Collection is empty";
+            return "> Collection is empty, element didn't add";
         }
     }
 
@@ -298,7 +301,7 @@ public class Manager {
      * Создание истории вызова команд (11)
      * @param string - имя команды
      */
-    void addToHistory(String string){
+    public void addToHistory(String string){
         if (history.size()<11) history.add(string);
         else {
             history.pop();
@@ -343,15 +346,17 @@ public class Manager {
      * Вывод элементов, значение поля 'name' которых содержит заданную подстроку
      * @param name - заданная подстрока
      */
-    public void filter_contains_name(String name) {
+    public ArrayList filter_contains_name(String name) {
+        ArrayList<String> mess = new ArrayList<>();
         boolean flag = true;
         for (Route route : ways){
             if (route.getName().contains(name)) {
-                System.out.println(route);
+                mess.add(route.toString());
                 flag = false;
             }
         }
-        if (flag) System.out.println("> No matches found");
+        if (flag) mess.add("> No matches found");
+        return mess;
     }
 
     /**

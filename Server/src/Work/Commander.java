@@ -1,8 +1,7 @@
 package Work;
 
 
-import Commands.Add;
-import Commands.AddIfMin;
+import Commands.*;
 import Common.CommandShell;
 import Common.Manager;
 
@@ -22,11 +21,32 @@ public class Commander {
         }catch (IOException e){
             System.out.println("Bad command received");
         }
-        if (command.getName().equals("add")) {
-            Add add = new Add(command.getFirstArg());
-            add.setMess(add.execute());
-        }else if (command.getName().equals("add_if_min")){
-            AddIfMin addIfMin = new AddIfMin(command.getFirstArg());
+        switch (command.getName()) {
+            case "add":
+                Add add = new Add(command.getName(), command.getFirstArg());
+                add.setMess(add.execute());
+                manager.addToHistory(command.getName());
+                break;
+            case "add_if_min":
+                AddIfMin addIfMin = new AddIfMin(command.getName(), command.getFirstArg());
+                addIfMin.setMess(addIfMin.execute());
+                manager.addToHistory(command.getName());
+                break;
+            case "clear":
+                Clear clear = new Clear(command.getName());
+                clear.setMess(clear.execute());
+                manager.addToHistory(command.getName());
+                break;
+            case "exit":
+                Exit exit = new Exit(command.getName());
+                exit.execute();
+                manager.addToHistory(command.getName());
+                break;
+            case "filter_contains_name":
+                FilterContainsName filter = new FilterContainsName(command.getName(), command.getThirdArg());
+                filter.setAnswer(filter.execute());
+                //переделать все под стрим апи, потом тут расписывать,
+                //возможно рпидется менять тип ответов и месседжей
         }
     }
 }

@@ -1,11 +1,11 @@
 package Commands;
 
 public class Exit extends ACommand {
-    private String mess;
-    @Override
-    public void setMess(String mess) {
-        this.mess = mess;
+
+    public Exit(String name){
+        this.name = name;
     }
+
     @Override
     public String execute() {
         manager.exit();
