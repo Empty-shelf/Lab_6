@@ -1,6 +1,7 @@
 package Commands;
 
 import Collection.Route;
+import java.util.ArrayDeque;
 
 public class AddIfMin extends ACommand {
     Route arg;
@@ -11,7 +12,7 @@ public class AddIfMin extends ACommand {
     }
 
     @Override
-    public String execute() {
+    public ArrayDeque<String> execute() {
         return manager.add_if_min(arg);
     }
 }

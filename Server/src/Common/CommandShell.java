@@ -17,6 +17,8 @@ public class CommandShell implements Serializable{
         this.mess = answer;
     }
 
+    public ArrayDeque<String> getMess(){return this.mess;}
+
     public CommandShell(){};
 
     CommandShell(String name, Route firstArg){

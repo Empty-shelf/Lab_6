@@ -1,6 +1,8 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 interface ICommand {
-    String execute();
+    ArrayDeque<String> execute();
 }
 

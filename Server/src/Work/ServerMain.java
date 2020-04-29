@@ -12,12 +12,14 @@ public class ServerMain {
     public static Receiver receiver;
 
     public static void main(String[] args) {
-        Commander commander =  new Commander(new Manager("Coll_Path"));
+        Commander commander = new Commander(new Manager("file_user.csv"));
         setContact();
-        commander.start(receiver.receive());
+        //while (true) {
+            commander.start(receiver.receive());
+        //} //?????
     }
 
-    public static boolean setContact(){
+    public static boolean setContact() {
         contact = null;
         try {
             contact = new Contact(1234);
@@ -30,28 +32,4 @@ public class ServerMain {
             return false;
         }
     }
-
-
-        /*try {
-            byte[] buf = new byte[5];
-            System.out.println("Waiting...");
-            DatagramSocket socket = new DatagramSocket(1234);
-            DatagramPacket packetIn = new DatagramPacket(buf, buf.length);
-            socket.receive(packetIn);
-            for (int i = 0; i < 5; i++) {
-                buf[i] *= 2;
-            }
-            System.out.println("Received");
-            System.out.println(packetIn);
-            DatagramPacket packetOut = new DatagramPacket(buf, buf.length, packetIn.getAddress(), packetIn.getPort());
-            socket.send(packetOut);
-            System.out.println("Sent");
-            socket.close();
-        }catch (SocketException e){
-            System.out.println("Can't create socket");
-        }catch (IOException e){
-            System.out.println("input/output error");
-        }
-
-         */
-    }
+}

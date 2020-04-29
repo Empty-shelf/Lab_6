@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Commander {
 
-    private String userCommand;
+    private String userCommand = "";
     private String[] finalUserCommand;
     private ArrayList<String> rec;
 

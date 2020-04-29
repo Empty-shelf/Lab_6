@@ -1,5 +1,7 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class Exit extends ACommand {
 
     public Exit(String name){
@@ -7,7 +9,7 @@ public class Exit extends ACommand {
     }
 
     @Override
-    public String execute() {
+    public ArrayDeque<String> execute() {
         manager.exit();
         return null;
     }

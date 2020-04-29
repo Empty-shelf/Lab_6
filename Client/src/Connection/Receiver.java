@@ -14,7 +14,7 @@ public class Receiver {
         contact = contact;
     }
 
-    public CommandShell receive() throws IOException {
+    public void receive() throws IOException {
         byte buf[] = new byte[32 * 1024];
         DatagramPacket packetIn = new DatagramPacket(buf, buf.length);
         try {
@@ -23,10 +23,9 @@ public class Receiver {
             ObjectInputStream ois = new ObjectInputStream(bais);
             CommandShell command = (CommandShell) ois.readObject();
             System.out.println("Received");
-            return command;
+            command.getMess().stream().forEachOrdered(System.out::println);
         } catch (ClassNotFoundException e) {
             System.out.println("Bad command received");
-            return null;
         }
     }
 }

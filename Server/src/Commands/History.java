@@ -1,14 +1,15 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class History extends ACommand {
 
-    History(String name){
+    public History(String name){
         this.name = name;
     }
 
     @Override
-    public String execute() {
-        manager.history();
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.history();
     }
 }

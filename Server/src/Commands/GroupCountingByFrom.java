@@ -1,12 +1,13 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class GroupCountingByFrom extends ACommand {
-    GroupCountingByFrom(String name){
+    public GroupCountingByFrom(String name){
         this.name = name;
     }
     @Override
-    public String execute() {
-        manager.group_counting_by_from();
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.group_counting_by_from();
     }
 }

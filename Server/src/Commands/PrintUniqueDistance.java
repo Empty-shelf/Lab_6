@@ -1,14 +1,15 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class PrintUniqueDistance extends ACommand {
 
-    PrintUniqueDistance(String name){
+    public PrintUniqueDistance(String name){
         this.name = name;
     }
 
     @Override
-    public String execute() {
-        manager.print_unique_distance();
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.print_unique_distance();
     }
 }

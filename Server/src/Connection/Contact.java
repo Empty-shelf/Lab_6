@@ -26,9 +26,7 @@ public class Contact {
     public boolean receiveConnection() {
         byte buf[] = {3,2,1};
         try {
-            //связка сокета канала с локальным адресом
             channel.bind(addr1);
-            //оборачивает байтовый массив в буфер
             ByteBuffer f = ByteBuffer.wrap(buf);
             f.clear();
             int mesLength = 0;

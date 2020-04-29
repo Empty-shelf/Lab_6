@@ -19,13 +19,13 @@ public class Receiver {
     }
 
     public CommandShell receive(){
-        DatagramChannel datach = contact.getChannel();
+        DatagramChannel channel = contact.getChannel();
         ByteBuffer bbf = ByteBuffer.wrap(bytes);
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = null;
         try {
             bbf.clear();
-            datach.read(bbf);
+            channel.read(bbf);
             ois = new ObjectInputStream(bais);
             CommandShell command = (CommandShell) ois.readObject();
             return command;

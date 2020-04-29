@@ -26,10 +26,8 @@ public class Sender {
             buf = bais.toByteArray();
             ByteBuffer bbf = ByteBuffer.wrap(buf);
             contact.getChannel().write(bbf);
-
             return true;
         } catch (IOException e) {
-
             return false;
         }
 

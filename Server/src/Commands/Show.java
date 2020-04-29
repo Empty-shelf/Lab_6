@@ -1,14 +1,15 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class Show extends ACommand {
 
-    Show(String name){
+    public Show(String name){
         this.name = name;
     }
 
     @Override
-    public String execute() {
-        manager.show();
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.show();
     }
 }

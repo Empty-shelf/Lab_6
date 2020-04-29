@@ -1,14 +1,15 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class RemoveHead extends ACommand {
 
-    RemoveHead(String name){
+    public RemoveHead(String name){
         this.name = name;
     }
 
     @Override
-    public String execute() {
-        manager.remove_head();
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.remove_head();
     }
 }

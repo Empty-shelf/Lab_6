@@ -2,17 +2,18 @@ package Commands;
 
 import Collection.Route;
 
+import java.util.ArrayDeque;
+
 public class Update extends ACommand {
     Route arg;
 
-    Update(String name, Route arg){
+    public Update(String name, Route arg){
         this.name = name;
         this.arg = arg;
     }
 
     @Override
-    public String execute() {
-        manager.update(arg);
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.update(arg);
     }
 }

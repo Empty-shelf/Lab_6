@@ -1,5 +1,7 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class Clear extends ACommand {
 
     public Clear(String name){
@@ -7,7 +9,7 @@ public class Clear extends ACommand {
     }
 
     @Override
-    public String execute() {
+    public ArrayDeque<String> execute() {
         return manager.clear();
     }
 }

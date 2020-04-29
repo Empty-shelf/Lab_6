@@ -1,14 +1,15 @@
 package Commands;
 
+import java.util.ArrayDeque;
+
 public class Help extends ACommand {
 
-    Help(String name){
+    public Help(String name){
         this.name = name;
     }
 
     @Override
-    public String execute() {
-        manager.help();
-        return null;
+    public ArrayDeque<String> execute() {
+        return manager.help();
     }
 }
