@@ -6,6 +6,8 @@ import Collection.*;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 
 public class ExecuteManager {
@@ -49,12 +51,11 @@ public class ExecuteManager {
     }
 
 
-    public static ExecuteManager getInstance(String filepath){
-        if(executeManager ==null){
-           executeManager = new  ExecuteManager(filepath);
-           return executeManager;
-        }
-        else return executeManager;
+    public static ExecuteManager getInstance(String filepath) {
+        if (executeManager == null) {
+            executeManager = new ExecuteManager(filepath);
+            return executeManager;
+        } else return executeManager;
     }
 
     /**
@@ -190,7 +191,7 @@ public class ExecuteManager {
      */
     public ArrayDeque<String> update(Route element) {
         ArrayDeque<Route> buf = new ArrayDeque<>();
-        if (ways.stream().filter(r -> r.getId() == element.getId()) != null) {
+        if (ways.stream().anyMatch(r -> r.getId() == element.getId())) {
             for (Route route : ways) {
                 if (route.getId() != element.getId()) {
                     buf.add(route);
@@ -211,10 +212,16 @@ public class ExecuteManager {
      * @param id - идентификационный номер
      */
     public ArrayDeque<String> remove_by_id(int id) {
-        Route route = ways.stream().filter(r -> r.getId() == id).findAny().get();
-        if (ways.remove(route)) {
-            mess.add("> Element removed");
-        } else mess.add("> Element with given id does not exist");
+        boolean flag = false;
+        for (Route route : ways) {
+            if (route.getId() == id) {
+                ways.remove(route);
+                flag = true;
+                mess.add("> Element removed");
+                break;
+            }
+        }
+        if (!flag) mess.add("> Element with given id does not exist");
         return mess;
     }
 

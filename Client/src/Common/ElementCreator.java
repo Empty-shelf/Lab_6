@@ -14,6 +14,7 @@ public class ElementCreator {
                 Scanner field = new Scanner(System.in);
                 System.out.println("> Input distance:");
                 double distance = field.nextDouble();
+                if (distance < 2) throw new InputMismatchException();
                 System.out.println("> Input route's name:");
                 if (field.nextLine() == null) throw new InputMismatchException();
                 String name = field.nextLine();
@@ -50,8 +51,8 @@ public class ElementCreator {
                 } else return new Route(distance, name, coordinates, locationFrom, locationTo);
             }catch (InputMismatchException e){
                 System.out.println("> Input error\n\u001B[34mReference:\u001B[0m\n\u001B[31mfraction :\u001B[0m" +
-                        " distance, x coordinate \u001B[31m(have to be more than -808)\u001B[0m," +
-                        " coordinates of locations(from/to)\n\u001B[31minteger :\u001B[0m y coordinate\n"+
+                        " distance \u001B[31m(more than 1)\u001B[0m, x coordinate \u001B[31m(have to be more than -808)" +
+                        "" + "\u001B[0m, coordinates of locations(from/to)\n\u001B[31minteger :\u001B[0m y coordinate\n"+
                         "\u001B[31mstring (not null) :\u001B[0m route's name (not empty), locations'(from/to) names");
             }
         }
@@ -63,20 +64,16 @@ public class ElementCreator {
      * @param script - коллекция-скрипт
      * @return объект класса Route
      */
-    Route constructorFile(int j, ArrayList<String[]> script) {
+    Route constructorFile(int j, ArrayList<String[]> script) throws InputMismatchException{
         double distance = Double.parseDouble(script.get(j + 1)[0]);
+        if (distance < 2) throw new InputMismatchException();
         String name = script.get(j + 2)[0];
-        try {
-            if (name.trim().length()==0) {
-                System.out.println("> Empty string entered");
-                throw new InputMismatchException();
-            }
-        }catch (InputMismatchException e){
-            System.out.println("> Wrong format\n" +
-                    "\u001B[31mstring (not null) :\u001B[0m route's name (not empty)");
-            System.exit(1);
+        if (name.trim().length() == 0) {
+            System.out.println("> Empty string entered");
+            throw new InputMismatchException();
         }
         double x = Double.parseDouble(script.get(j + 3)[0]);
+        if (x <= -808) throw new InputMismatchException();
         Integer y = Integer.valueOf(script.get(j + 4)[0]);
         String locFrom = script.get(j + 5)[0];
         double fromX = Double.parseDouble(script.get(j + 6)[0]);
@@ -88,7 +85,7 @@ public class ElementCreator {
         Location locationFrom = new Location(locFrom, fromX, fromY);
         Location locationTo = new Location(locTo, toX, toY);
         if (script.get(j)[0].equals("update")) {
-            Route route =  new Route(distance, name, coordinates, locationFrom, locationTo);
+            Route route = new Route(distance, name, coordinates, locationFrom, locationTo);
             route.setId(Integer.parseInt(script.get(j)[1]));
             return route;
         } else return new Route(distance, name, coordinates, locationFrom, locationTo);

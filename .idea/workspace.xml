@@ -159,7 +159,7 @@
       <option name="presentableId" value="Default" />
       <updated>1587899824339</updated>
       <workItem from="1587899827498" duration="7347000" />
-      <workItem from="1587918774236" duration="107254000" />
+      <workItem from="1587918774236" duration="124888000" />
     </task>
     <servers />
   </component>
@@ -176,78 +176,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/Client/src/Common/Commander.java</url>
-          <line>25</line>
-          <properties class="Common.Commander" method="interactiveMod">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/Server/src/Commands/FilterContainsName.java</url>
-          <line>13</line>
-          <properties class="Commands.FilterContainsName" method="execute">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Commands/ACommand.java</url>
-          <line>4</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Commands/ACommand.java</url>
-          <line>6</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Commands/ACommand.java</url>
-          <line>7</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>55</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>56</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>57</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>58</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>59</line>
-          <option name="timeStamp" value="36" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>60</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-field">
-          <url>file://$PROJECT_DIR$/Server/src/Commands/ACommand.java</url>
-          <line>5</line>
-          <properties field="name" class="Commands.ACommand" />
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

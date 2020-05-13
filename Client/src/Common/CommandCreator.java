@@ -26,7 +26,7 @@ public class CommandCreator {
 
     //для работы со скриптом
     CommandShell create(String name, int j, ArrayList<String[]> script){
-        if (name.equals("add") || name.equals("add_if_min") )
+        if (name.equals("add") || name.equals("add_if_min") || name.equals("update"))
             return new CommandShell(name, elementCreator.constructorFile(j, script));
         else return new CommandShell(name);
     }
