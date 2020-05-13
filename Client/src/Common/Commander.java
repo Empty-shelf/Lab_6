@@ -1,6 +1,7 @@
 package Common;
 
-import static Work.ClientMain.sender;
+import Connection.Manager;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -9,6 +10,12 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Commander {
+
+    private Manager manager;
+
+    public Commander(Manager manager){
+        this.manager = manager;
+    }
 
     private String userCommand = "";
     private String[] finalUserCommand;
@@ -29,11 +36,16 @@ public class Commander {
                         finalUserCommand[0].equals("group_counting_by_from") ||
                         finalUserCommand[0].equals("print_unique_distance") ||
                         finalUserCommand[0].equals("remove_head") || finalUserCommand[0].equals("add_if_min") ||
-                        finalUserCommand[0].equals("history")) sender.send(creator.create(finalUserCommand[0]));
+                        finalUserCommand[0].equals("history")) {
+                    manager.send(creator.create(finalUserCommand[0]));
+                    manager.receive().getMess().forEach(System.out::println);
+                    if (finalUserCommand[0].equals("exit")) System.exit(0);
+                }
                 else if (finalUserCommand[0].equals("update")) {
                     try {
                         int id = Integer.parseInt(finalUserCommand[1].trim());
-                        sender.send(creator.create(finalUserCommand[0], id));
+                        manager.send(creator.create(finalUserCommand[0], id));
+                        manager.receive().getMess().forEach(System.out::println);
                     } catch (NumberFormatException e) {
                         System.out.println("> Input error (id have to be an integer)");
                     }
@@ -41,13 +53,15 @@ public class Commander {
                 else if ( finalUserCommand[0].equals("remove_by_id")) {
                     try {
                         int i = Integer.parseInt(finalUserCommand[1].trim());
-                        sender.send(creator.create(finalUserCommand[0], i));
+                        manager.send(creator.create(finalUserCommand[0], i));
+                        manager.receive().getMess().forEach(System.out::println);
                     } catch (NumberFormatException e) {
                         System.out.println("> Input error (id have to be an integer)");
                     }
                 }
                 else if (finalUserCommand[0].equals("filter_contains_name")) {
-                    sender.send(creator.create(finalUserCommand[0], finalUserCommand[1].trim()));
+                    manager.send(creator.create(finalUserCommand[0], finalUserCommand[1].trim()));
+                    manager.receive().getMess().forEach(System.out::println);
                 }
                 else if (finalUserCommand[0].equals("execute_script")) script(finalUserCommand[1].trim());
                 else System.out.println("> Unidentified command - input 'help' for reference");
@@ -57,7 +71,6 @@ public class Commander {
         } catch (NoSuchElementException e) {
             System.out.println("> No line found");
         }
-
     }
 
     public void script(String file_path){
@@ -90,11 +103,11 @@ public class Commander {
                             script.get(j)[0].equals("print_unique_distance") ||
                             script.get(j)[0].equals("remove_head") || script.get(j)[0].equals("add_if_min") ||
                             script.get(j)[0].equals("history"))
-                        sender.send(creator.create(script.get(j)[0], j, script));
+                        manager.send(creator.create(script.get(j)[0], j, script));
                     else if (script.get(j)[0].equals("update")){
                         try {
                             int id = Integer.parseInt(script.get(j)[1].trim());
-                            sender.send(creator.create(finalUserCommand[0], j, script));
+                            manager.send(creator.create(finalUserCommand[0], j, script));
                         } catch (NumberFormatException e) {
                             System.out.println("> Input error (id have to be an integer)");
                         }
@@ -102,14 +115,14 @@ public class Commander {
                     else if (script.get(j)[0].equals("remove_by_id"))
                          try {
                              int k = Integer.parseInt(script.get(j)[1].trim());
-                             sender.send(creator.create(script.get(j)[0], k));
+                             manager.send(creator.create(script.get(j)[0], k));
                          } catch (NumberFormatException e) {
                              System.out.println("> Input error (id have to be an integer)");
                          }
 
                     else if (script.get(j)[0].equals("execute_script")) script(finalUserCommand[1].trim());
                     else if (script.get(j)[0].equals("filter_contains_name"))
-                        sender.send(creator.create(finalUserCommand[0], finalUserCommand[1].trim()));
+                        manager.send(creator.create(finalUserCommand[0], finalUserCommand[1].trim()));
                     else System.out.println("> Unidentified command");
                     if (script.get(j)[0].equals("add") || script.get(j)[0].equals("add_if_min") ||
                             script.get(j)[0].equals("update")) j+=10;

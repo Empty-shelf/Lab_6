@@ -19,8 +19,6 @@ public class CommandShell implements Serializable{
 
     public ArrayDeque<String> getMess(){return this.mess;}
 
-    public CommandShell(){};
-
     CommandShell(String name, Route firstArg){
         this.name = name;
         this.firstArg = firstArg;
@@ -51,7 +49,4 @@ public class CommandShell implements Serializable{
     }
 
     public void setName(String name) {this.name = name;}
-    public void setFirstArg(Route firstArg) {this.firstArg = firstArg;}
-    public void setSecondArg(int secondArg) {this.secondArg = secondArg;}
-    public void setThirdArg(String thirdArg) {this.thirdArg = thirdArg;}
 }

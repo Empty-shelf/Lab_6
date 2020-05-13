@@ -1,8 +1,8 @@
 package Commands;
 
-import Common.Manager;
+import Common.ExecuteManager;
 
 public abstract class ACommand implements ICommand {
     String name;
-    protected Manager manager;
+    protected ExecuteManager manager = ExecuteManager.getInstance("");
 }

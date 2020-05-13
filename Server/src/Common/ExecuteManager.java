@@ -1,12 +1,14 @@
 package Common;
 
+
 import Collection.*;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class Manager {
+
+public class ExecuteManager {
     private ArrayDeque<Route> ways; //коллекция
     private Date dateOfCreation;
     private String[][] commands; //массив команд и их описаний
@@ -15,6 +17,7 @@ public class Manager {
 
     private ArrayDeque<String> mess;
 
+    private static ExecuteManager executeManager;
 
     {
         ways = new ArrayDeque<>();
@@ -23,7 +26,8 @@ public class Manager {
         mess = new ArrayDeque<>();
     }
 
-    public Manager(String collPath) {
+
+    private ExecuteManager(String collPath) {
         try {
             if (collPath == null) throw new FileNotFoundException();
         } catch (FileNotFoundException e) {
@@ -42,6 +46,15 @@ public class Manager {
         }
         dateOfCreation = new Date();
         read();
+    }
+
+
+    public static ExecuteManager getInstance(String filepath){
+        if(executeManager ==null){
+           executeManager = new  ExecuteManager(filepath);
+           return executeManager;
+        }
+        else return executeManager;
     }
 
     /**
@@ -87,7 +100,7 @@ public class Manager {
                 } else flag = false;
             }
         } catch (FileNotFoundException e) {
-            System.out.println("> File not found");
+            System.out.println("> File with data not found");
             System.exit(1);
         } catch (NumberFormatException e) {
             System.out.println("> Invalid argument format in file");
@@ -139,7 +152,7 @@ public class Manager {
      * Вывод справки по доступным командам
      */
     public ArrayDeque<String> help() {
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 15; i++) {
             mess.add("> " + commands[i][0] + " : " + commands[i][1]);
         }
         return mess;
@@ -245,9 +258,10 @@ public class Manager {
     /**
      * Завершение программы с сохранением коллекции
      */
-    public void exit() {
+    public ArrayDeque<String> exit() {
         save();
-        System.exit(0);
+        mess.add("> Completion of work...");
+        return mess;
     }
 
     /**
@@ -322,10 +336,10 @@ public class Manager {
     /**
      * Вывод элементов, значение поля 'name' которых содержит заданную подстроку
      *
-     * @param name - заданная подстрока
+     * @param str - заданная подстрока
      */
-    public ArrayDeque<String> filter_contains_name(String name) {
-        ways.stream().filter(route -> route.getName().contains(name)).forEachOrdered(route -> mess.add(route.getName()));
+    public ArrayDeque<String> filter_contains_name(String str) {
+        ways.stream().filter(route -> route.getName().contains(str)).forEachOrdered(route -> mess.add(route.getName()));
         if (mess.isEmpty()) mess.add("> No matches found");
         return mess;
     }

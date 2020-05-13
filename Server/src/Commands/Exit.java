@@ -10,7 +10,6 @@ public class Exit extends ACommand {
 
     @Override
     public ArrayDeque<String> execute() {
-        manager.exit();
-        return null;
+        return manager.exit();
     }
 }
