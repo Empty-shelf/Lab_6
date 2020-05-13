@@ -159,7 +159,7 @@
       <option name="presentableId" value="Default" />
       <updated>1587899824339</updated>
       <workItem from="1587899827498" duration="7347000" />
-      <workItem from="1587918774236" duration="124888000" />
+      <workItem from="1587918774236" duration="127643000" />
     </task>
     <servers />
   </component>
@@ -176,5 +176,19 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/Server/src/Connection/ConnectionManager.java</url>
+          <line>32</line>
+          <properties class="Connection.ConnectionManager" method="receive">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

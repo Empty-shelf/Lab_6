@@ -3,14 +3,17 @@ package Connection;
 import Common.CommandShell;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ConnectionManager {
+
+    public static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
 
     private DatagramChannel channel;
     private SocketAddress addr1;
@@ -23,7 +26,7 @@ public class ConnectionManager {
             addr1 = new InetSocketAddress(PORT);
             channel = DatagramChannel.open().bind(addr1);
         }catch (IOException e){
-            System.out.println("Smth went wrong");
+            logger.log(Level.SEVERE, "Input/output error", e);
         }
     }
 
@@ -32,7 +35,7 @@ public class ConnectionManager {
         ByteBuffer bbf = ByteBuffer.wrap(bytes);
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = null;
-        System.out.println("> Waiting for a request...");
+        logger.log(Level.INFO,"Waiting for request..." );
         try {
             bbf.clear();
 
@@ -40,13 +43,14 @@ public class ConnectionManager {
 
             if (!channel.isConnected()) {
                 channel.connect(addr2);
+                logger.log(Level.INFO, "Channel is connected to client's address");
             }
 
             ois = new ObjectInputStream(bais);
             CommandShell command = (CommandShell) ois.readObject();
             return command;
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Smth went wrong");
+            logger.log(Level.SEVERE, "Input/output error", e);
             return null;
         }
     }
@@ -61,10 +65,13 @@ public class ConnectionManager {
             buf = bais.toByteArray();
             ByteBuffer bbf = ByteBuffer.wrap(buf);
             channel.write(bbf);
-            System.out.println("> Sent a response");
-            if (command.getName().equals("exit")) channel.disconnect();
+            logger.log(Level.INFO,"Sent a response");
+            if (command.getName().equals("exit")){
+                channel.disconnect();
+                logger.log(Level.INFO, "Channel is disconnected to client's address");
+            }
         } catch (IOException e) {
-            System.out.println("Smth went wrong");
+            logger.log(Level.SEVERE, "Input/output error", e);
         }
     }
 }

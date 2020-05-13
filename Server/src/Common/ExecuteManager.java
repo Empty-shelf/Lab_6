@@ -267,6 +267,7 @@ public class ExecuteManager {
      */
     public ArrayDeque<String> exit() {
         save();
+        history.clear();
         mess.add("> Completion of work...");
         return mess;
     }
