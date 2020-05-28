@@ -39,10 +39,10 @@ public class Receiver {
             ObjectInputStream objInput = new ObjectInputStream(new ByteArrayInputStream(b));
             //десериализация объекта
             CommandShell command = (CommandShell) objInput.readObject();
-            System.out.println("Response is received");
+            System.out.println("> Response is received");
             return command;
         } catch (ClassNotFoundException e) {
-            System.out.println("Bad command is received");
+            System.out.println("> Bad command is received");
             return null;
         } catch (SocketTimeoutException e) {
             System.out.println("> Server isn't responding");
@@ -50,7 +50,7 @@ public class Receiver {
         }catch (PortUnreachableException e){
             throw new PortUnreachableException();
         } catch (IOException e) {
-            System.out.println("Smth went wrong");
+            System.out.println("> Smth went wrong");
             return null;
         }
     }

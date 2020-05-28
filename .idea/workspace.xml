@@ -176,7 +176,7 @@
       <workItem from="1590531419567" duration="9476000" />
       <workItem from="1590580561045" duration="2137000" />
       <workItem from="1590588363150" duration="28655000" />
-      <workItem from="1590620758124" duration="706000" />
+      <workItem from="1590620758124" duration="2127000" />
     </task>
     <servers />
   </component>
@@ -241,7 +241,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/Client/src/Connection/Manager.java</url>
-          <line>51</line>
+          <line>53</line>
           <properties class="Connection.Manager" method="interactiveMod">
             <option name="EMULATED" value="true" />
           </properties>
@@ -251,6 +251,11 @@
           <url>file://$PROJECT_DIR$/Client/src/Work/ClientMain.java</url>
           <line>17</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Client/src/Connection/Manager.java</url>
+          <line>35</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

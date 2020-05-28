@@ -36,6 +36,8 @@ public class Manager {
                 receiver.receive().getMess().forEach(System.out::println);
             }catch (PortUnreachableException e){
                 System.out.println("> Port is unreachable");
+            }catch (NullPointerException e){
+                System.out.println("> No answer from server");
             }
         }));
     }
@@ -52,7 +54,7 @@ public class Manager {
     public void interactiveMod() {
         System.out.println("> Ready for work");
         try{
-            System.out.println("Contact with server: " + sender.Connection().getConnection());
+            System.out.println("> Contact with server: " + sender.Connection().getConnection());
 
             while (!userCommand.equals("exit")) {
                 boolean check = true;
