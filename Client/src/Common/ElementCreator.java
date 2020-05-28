@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ElementCreator {
+class ElementCreator {
 
-    Route constructorSystemIn(int id) {
+    Route constructor(int id) {
         while (true) {
             try {
                 Scanner field = new Scanner(System.in);
@@ -64,7 +64,7 @@ public class ElementCreator {
      * @param script - коллекция-скрипт
      * @return объект класса Route
      */
-    Route constructorFile(int j, ArrayList<String[]> script) throws InputMismatchException{
+    Route constructor(int j, ArrayList<String[]> script) throws InputMismatchException{
         double distance = Double.parseDouble(script.get(j + 1)[0]);
         if (distance < 2) throw new InputMismatchException();
         String name = script.get(j + 2)[0];

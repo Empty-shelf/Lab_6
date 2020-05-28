@@ -1,5 +1,4 @@
 package Collection;
-
 import java.io.Serializable;
 
 /**

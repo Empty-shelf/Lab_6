@@ -21,25 +21,3 @@ field
 forest
 21.7
 90.5
-show
-remove_by_id 4
-show
-add_if_min 
-328.9
-route0
-77.3
-32
-lake
-66
-93.6
-country house
-51
-98.3
-show
-remove_head
-show
-group_counting_by_from
-filter_contains_name 2
-print_unique_distance
-show
-exit

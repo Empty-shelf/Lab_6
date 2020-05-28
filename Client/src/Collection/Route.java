@@ -3,20 +3,20 @@ package Collection;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Класс, коллекцией экземпляров которого управляет программа
  */
+
 public class Route implements Comparable<Route>, Serializable {
-    private int id;//больше 0 (униальное значение, генерируется автоматически)
+    private int id;
     private Random random = new Random();
-    //private static AtomicInteger i = new AtomicInteger();
-    private String name; //не может быть null, строка не может быть пустой
-    private Coordinates coordinates; //не может быть null
-    private java.time.LocalDateTime creationDate; //не может быть null (генерируется автоматически)
-    private Location from; //не может быть null
-    private Location to; //может быть null
-    private double distance;//больше 1
+    private String name;
+    private Coordinates coordinates;
+    private java.time.LocalDateTime creationDate;
+    private Location from;
+    private Location to;
+    private double distance;
 
     public Route(double distance, String name, Coordinates coordinates, Location from, Location to) {
         this.distance = distance;

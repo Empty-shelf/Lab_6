@@ -1,14 +1,8 @@
 package Common;
 
-
 import Collection.*;
-
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 
 public class ExecuteManager {
     private ArrayDeque<Route> ways; //коллекция

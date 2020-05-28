@@ -44,6 +44,11 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\811901\Desktop\Lab_6" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\811901\Desktop\Lab_6\Client\src" />
+      <recent name="C:\Users\811901\Desktop\Lab_6\Server\src" />
+      <recent name="C:\Users\811901\Desktop\Lab_6\Server" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -165,7 +170,13 @@
       <option name="presentableId" value="Default" />
       <updated>1587899824339</updated>
       <workItem from="1587899827498" duration="7347000" />
-      <workItem from="1587918774236" duration="134440000" />
+      <workItem from="1587918774236" duration="142536000" />
+      <workItem from="1590005680927" duration="11448000" />
+      <workItem from="1590360824200" duration="17765000" />
+      <workItem from="1590531419567" duration="9476000" />
+      <workItem from="1590580561045" duration="2137000" />
+      <workItem from="1590588363150" duration="28655000" />
+      <workItem from="1590620758124" duration="706000" />
     </task>
     <servers />
   </component>
@@ -177,7 +188,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -187,22 +200,64 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/Server/src/Connection/ConnectionManager.java</url>
-          <line>32</line>
-          <properties class="Connection.ConnectionManager" method="receive">
+          <url>file://$PROJECT_DIR$/Client/src/Connection/Sender.java</url>
+          <line>22</line>
+          <properties class="Connection.Sender" method="send">
             <option name="EMULATED" value="true" />
           </properties>
-          <option name="timeStamp" value="71" />
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/Server/src/Work/ServerMain.java</url>
-          <line>5</line>
-          <properties class="Work.ServerMain" method="main">
+          <url>file://$PROJECT_DIR$/Server/src/Connection/Connection.java</url>
+          <line>41</line>
+          <properties class="Connection.Connection" method="getConnection">
             <option name="EMULATED" value="true" />
           </properties>
-          <option name="timeStamp" value="73" />
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/Server/src/Connection/Receiver.java</url>
+          <line>24</line>
+          <properties class="Connection.Receiver" method="receive">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/Server/src/Connection/Sender.java</url>
+          <line>22</line>
+          <properties class="Connection.Sender" method="send">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
+          <line>36</line>
+          <properties class="Work.Commander" method="start">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/Client/src/Connection/Manager.java</url>
+          <line>51</line>
+          <properties class="Connection.Manager" method="interactiveMod">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Client/src/Work/ClientMain.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="script.get(j)[0]" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
