@@ -6,8 +6,13 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+//создание аргумента, который является элементом коллекции
 class ElementCreator {
-
+    /*
+    "конструктор" элемента через ввод с консоли (если id указан - т.е. он не равен 0,
+    то на выход получаем элемент с заданным id (например, для команды update), иначе
+    id генерируется автоматически
+    */
     Route constructor(int id) {
         while (true) {
             try {
@@ -16,7 +21,7 @@ class ElementCreator {
                 double distance = field.nextDouble();
                 if (distance < 2) throw new InputMismatchException();
                 System.out.println("> Input route's name:");
-                if (field.nextLine() == null) throw new InputMismatchException();
+                System.out.println(field.nextLine());
                 String name = field.nextLine();
                 if (name.trim().length()==0){
                     System.out.println("> Empty string entered");
@@ -28,14 +33,14 @@ class ElementCreator {
                 System.out.println("> Input y coordinate:");
                 Integer y = field.nextInt();
                 System.out.println("> Input name of location from:");
-                if (field.nextLine() == null) throw new InputMismatchException();
+                field.nextLine();
                 String locFrom = field.nextLine();
                 System.out.println("> Input x coordinate of location from:");
                 double fromX = field.nextDouble();
                 System.out.println("> Input y coordinate of location from:");
                 float fromY = field.nextFloat();
                 System.out.println("> Input name of location to:");
-                if (field.nextLine() == null) throw new InputMismatchException();
+                field.nextLine();
                 String locTo = field.nextLine();
                 System.out.println("> Input x coordinate of location to:");
                 double toX = field.nextDouble();

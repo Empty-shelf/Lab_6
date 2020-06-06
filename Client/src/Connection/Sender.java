@@ -20,6 +20,7 @@ public class Sender {
     }
     private byte b[] = new byte[32*1024];
 
+    //отправка команды на сервер
     public boolean send(CommandShell command){
         byte b2[];
         try {

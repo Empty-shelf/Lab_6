@@ -17,11 +17,12 @@ public class Commander {
 
     public static final Logger logger = Logger.getLogger(Commander.class.getName());
 
+    //исполнитель команд
     private ExecuteManager exManager;
-
+    //команда для отправки
     private CommandShell command;
-
     private Connection connection;
+    //отвечает за отправку/получение команд
     private ConnectionManager conManager;
     private int PORT;
 
@@ -35,6 +36,7 @@ public class Commander {
     }
 
     void start(){
+
         exManager.clearMess();
         connection.getConnection();
         conManager = new ConnectionManager(new Receiver(connection), new Sender(connection));

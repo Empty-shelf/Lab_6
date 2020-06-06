@@ -4,7 +4,7 @@ import Collection.Route;
 import java.util.ArrayDeque;
 
 public class Add extends ACommand {
-    Route arg;
+    private Route arg;
 
     public Add(String name, Route arg){
         this.name = name;

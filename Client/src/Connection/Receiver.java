@@ -18,6 +18,7 @@ public class Receiver {
         connection = con;
     }
 
+    //получение ответа от сервера
     public CommandShell receive() throws PortUnreachableException {
         byte[] b = new byte[32 * 1024];
         //инициализация датаграмы (на вход)
@@ -26,16 +27,7 @@ public class Receiver {
             connection.getSocket().setSoTimeout(30000);
             //получение данных через сокет
             connection.getSocket().receive(packet);
-            /*try {
-                connection.getSocket().receive(packet);
-            } catch (PortUnreachableException e) {
-                    if (!connection.getConnection()) return null;
-                    else return receive();
-            }
-
-             */
             //цепочка потоков (на ввод)
-            //ByteArrayInputStream input = new ByteArrayInputStream(b);
             ObjectInputStream objInput = new ObjectInputStream(new ByteArrayInputStream(b));
             //десериализация объекта
             CommandShell command = (CommandShell) objInput.readObject();
@@ -50,7 +42,7 @@ public class Receiver {
         }catch (PortUnreachableException e){
             throw new PortUnreachableException();
         } catch (IOException e) {
-            System.out.println("> Smth went wrong");
+            System.out.println("> Smth went wrong in receiver");
             return null;
         }
     }

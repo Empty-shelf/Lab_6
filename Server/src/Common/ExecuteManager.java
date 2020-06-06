@@ -5,14 +5,17 @@ import java.io.*;
 import java.util.*;
 
 public class ExecuteManager {
-    private ArrayDeque<Route> ways; //коллекция
+    //коллекция
+    private ArrayDeque<Route> ways;
     private Date dateOfCreation;
-    private String[][] commands; //массив команд и их описаний
+    //массив команд и их описаний
+    private String[][] commands;
     private File csvFile;
-    private ArrayDeque<String> history;  //история
-
+    //хранение истории (названий команд)
+    private ArrayDeque<String> history;
+    //сообщение для передачи клиенту
     private ArrayDeque<String> mess;
-
+    //"объект-одиночка"
     private static ExecuteManager executeManager;
 
     {
@@ -20,8 +23,9 @@ public class ExecuteManager {
         history = new ArrayDeque<>();
         commands = new String[16][1];
         mess = new ArrayDeque<>();
+        //сохранение коллекции в файл при отключении jvm
+        Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
-
 
     private ExecuteManager(String collPath) {
         try {
@@ -44,7 +48,7 @@ public class ExecuteManager {
         read();
     }
 
-
+    //инициализация/получение "объекта-одиночки"
     public static ExecuteManager getInstance(String filepath) {
         if (executeManager == null) {
             executeManager = new ExecuteManager(filepath);
@@ -120,7 +124,6 @@ public class ExecuteManager {
                 commands[i] = s.split(":");
                 i++;
             }
-            in.close();
         } catch (FileNotFoundException e) {
             System.out.println("> File (with commands) not found");
             System.exit(1);

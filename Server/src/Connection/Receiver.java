@@ -40,7 +40,6 @@ public class Receiver {
             objInput = new ObjectInputStream(input);
             //десериализация объекта
             CommandShell command = (CommandShell) objInput.readObject();
-            System.out.println("Received");
             return command;
         } catch (ClassNotFoundException e) {
             logger.log(Level.SEVERE, "> Bad command is received", e);

@@ -12,7 +12,7 @@ public class ClientMain {
     public static void main (String [] args) {
         try {
             //установление связи с сервером
-            connection = new Connection(1237, "Localhost");
+            connection = Connection.getInstance(1237, "Localhost");
             manager = Manager.getInstance(new Receiver(connection), new Sender(connection));
         } catch (SocketException e) {
             e.printStackTrace();

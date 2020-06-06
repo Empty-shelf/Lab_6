@@ -10,6 +10,9 @@ public class Connection {
     private SocketAddress addr;
     private DatagramSocket socket;
 
+    //"объект-одиночка"
+    public static Connection connection;
+
     SocketAddress getAddr() {
         return addr;
     }
@@ -18,15 +21,22 @@ public class Connection {
         return socket;
     }
 
-    public Connection(int port, String host) throws SocketException {
+    private Connection(int port, String host) throws SocketException {
         PORT = port;
         HOST = host;
         addr = new InetSocketAddress(host, port);
         socket = new DatagramSocket();
     }
+    //инициализация/получение объекта одиночки
+    public static Connection getInstance(int port, String host) throws SocketException {
+        if (connection == null) {
+            connection = new Connection(port, host);
+            return connection;
+        } else return connection;
+    }
 
     //установление связи
-    public boolean getConnection() {
+    public boolean getConnection(){
         byte[] b = new byte[]{1, 2, 3};
         //на выход
         DatagramPacket packetOut = new DatagramPacket(b, b.length, addr);
@@ -38,7 +48,6 @@ public class Connection {
                 c = 0;
             }
             //на вход
-           // if (!receive(new DatagramPacket(b, b.length))) return false;
             DatagramPacket packetIn = new  DatagramPacket(b, b.length);
             socket.setSoTimeout(20000);
             socket.receive(packetIn);
@@ -46,27 +55,16 @@ public class Connection {
             //соединение с адресом и портом (сервером)
             socket.connect(addr);
             return true;
-        } catch (SocketTimeoutException | PortUnreachableException e) {
+        } catch (SocketTimeoutException e) {
             System.out.println("> Server isn't responding");
+            return false;
+        }catch (PortUnreachableException e){
             return false;
         } catch (IOException e) {
             System.out.println("> Smth wrong with connection");
             return false;
         }
     }
-
-   /* private boolean receive(DatagramPacket packetIn) throws IOException, InterruptedException {
-            //получение датаграммы
-        try {
-            socket.receive(packetIn);
-            return true;
-        } catch (PortUnreachableException e) {
-                Thread.sleep(2000);
-                return receive(packetIn);
-        }
-    }
-
-    */
 }
 
 

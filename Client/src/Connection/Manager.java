@@ -12,14 +12,14 @@ import java.util.Scanner;
 
 public class Manager {
 
+    //отвечает за отправку команды на сервер
     private Sender sender;
+    //отвечает за получение ответа от сервера
     private Receiver receiver;
 
-    private DatagramSocket sock;
-    private SocketAddress addr;
-
+    //реализация "объекта-одиночки"
     private static Manager manager;
-
+    //метод инициализации/получения "объекта-одиночки"
     public static Manager getInstance(Receiver receiver, Sender sender){
         if (manager == null) {
             manager = new Manager(receiver, sender);
@@ -30,6 +30,7 @@ public class Manager {
     private Manager(Receiver receiver, Sender sender){
         this.receiver = receiver;
         this.sender = sender;
+        //обработка ситуации отключения jvm
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 sender.send(creator.create("exit"));
@@ -42,83 +43,86 @@ public class Manager {
         }));
     }
 
-    CommandShell com;
+    //инициализируемая на клиенте и отправляемая на сервер оболочка команды
+    private CommandShell com;
+    //строка - команда пользователя (введенная с консоли)
     private String userCommand = "";
+    //команда пользователя, помещенная в массив (вместе с аргументами)
     private String[] finalUserCommand;
+    /*
+    контроль рекурсии (коллекция хранит имена файлов,
+    содержащих скрипт, которые используются при выполнении одной команды
+     */
     private ArrayList<String> rec = new ArrayList<>();
-
+    //отвечает за создание оболочки команды, отправляемой на сервер
     private CommandCreator creator = new CommandCreator();
 
     private Scanner commandReader = new Scanner(System.in);
 
     public void interactiveMod() {
         System.out.println("> Ready for work");
-        try{
-            System.out.println("> Contact with server: " + sender.Connection().getConnection());
+        //установление предварительного контакта с сервером
+        System.out.println("> Contact with server: " + sender.Connection().getConnection());
 
-            while (!userCommand.equals("exit")) {
-                boolean check = true;
-                while(check) {
-                    if (commandReader.hasNextLine()) {
-                        userCommand = commandReader.nextLine();
-                        check = false;
-                    }
+        while (!userCommand.equals("exit")) {
+            userCommand = commandReader.nextLine();
+            finalUserCommand = userCommand.trim().split(" ", 2);
+            try {
+                if (userCommand.trim().length() == 0) throw new InputMismatchException();
+                if (finalUserCommand[0].equals("exit")) {
+                    commandReader.close();
+                    System.exit(0);
                 }
-                finalUserCommand = userCommand.trim().split(" ", 2);
-                try {
-                    if (finalUserCommand[0].equals("exit")) { commandReader.close(); System.exit(0);}
-                    if (finalUserCommand[0].equals("help") || finalUserCommand[0].equals("info") ||
-                            finalUserCommand[0].equals("show") || finalUserCommand[0].equals("add") ||
-                            finalUserCommand[0].equals("clear") ||
-                            finalUserCommand[0].equals("group_counting_by_from") ||
-                            finalUserCommand[0].equals("print_unique_distance") ||
-                            finalUserCommand[0].equals("remove_head") || finalUserCommand[0].equals("add_if_min") ||
-                            finalUserCommand[0].equals("history")) {
-                        com = creator.create(finalUserCommand[0]);
+                if (finalUserCommand[0].equals("help") || finalUserCommand[0].equals("info") ||
+                        finalUserCommand[0].equals("show") || finalUserCommand[0].equals("add") ||
+                        finalUserCommand[0].equals("clear") ||
+                        finalUserCommand[0].equals("group_counting_by_from") ||
+                        finalUserCommand[0].equals("print_unique_distance") ||
+                        finalUserCommand[0].equals("remove_head") || finalUserCommand[0].equals("add_if_min") ||
+                        finalUserCommand[0].equals("history")) {
+                    com = creator.create(finalUserCommand[0]);
+                    sender.send(com);
+                    check();
+                    break;
+                } else if (finalUserCommand[0].equals("update")) {
+                    try {
+                        int id = Integer.parseInt(finalUserCommand[1].trim());
+                        com = creator.create(finalUserCommand[0], id);
                         sender.send(com);
                         check();
                         break;
-                    } else if (finalUserCommand[0].equals("update")) {
-                        try {
-                            int id = Integer.parseInt(finalUserCommand[1].trim());
-                            com = creator.create(finalUserCommand[0], id);
-                            sender.send(com);
-                            check();
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("> Input error (id have to be an integer)");
-                        }
-                    } else if (finalUserCommand[0].equals("remove_by_id")) {
-                        try {
-                            int i = Integer.parseInt(finalUserCommand[1].trim());
-                            com = creator.create(finalUserCommand[0], i);
-                            sender.send(com);
-                            check();
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("> Input error (id have to be an integer)");
-                        }
-                    } else if (finalUserCommand[0].equals("filter_contains_name")) {
-                        com = creator.create(finalUserCommand[0], finalUserCommand[1].trim());
-                        sender.send(com);
-                        check();
-                        break;
-                    } else if (finalUserCommand[0].equals("execute_script")){
-                        script(finalUserCommand[1].trim());
-                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("> Input error (id have to be an integer)");
                     }
-                    else System.out.println("> Unidentified command - input 'help' for reference");
+                } else if (finalUserCommand[0].equals("remove_by_id")) {
+                    try {
+                        int i = Integer.parseInt(finalUserCommand[1].trim());
+                        com = creator.create(finalUserCommand[0], i);
+                        sender.send(com);
+                        check();
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("> Input error (id have to be an integer)");
+                    }
+                } else if (finalUserCommand[0].equals("filter_contains_name")) {
+                    com = creator.create(finalUserCommand[0], finalUserCommand[1].trim());
+                    sender.send(com);
+                    check();
+                    break;
+                } else if (finalUserCommand[0].equals("execute_script")) {
+                    script(finalUserCommand[1].trim());
+                    break;
+                } else System.out.println("> Unidentified command - input 'help' for reference");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("> Missing argument");
+                } catch (InputMismatchException e) {
+                   System.out.println("Empty string entered (unidentified command) - input 'help' for reference");
                 }
             }
-        }catch (NoSuchElementException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
         com = null;
     }
 
+    //проверка получения и получение ответа от сервера
     private void check(){
         try {
             receiver.receive().getMess().forEach(System.out::println);
@@ -131,6 +135,7 @@ public class Manager {
                         break;
                     } else {
                         Thread.sleep(2000);
+                        if (i==15) System.out.println("> Wait...");
                         if (i==1) System.out.println("> Server isn't responding");
                     }
                 }
@@ -141,6 +146,8 @@ public class Manager {
             }
         }
     }
+
+    //выполнение скрипта
     private void script(String file_path){
         File file = new File(file_path);
         try {
@@ -220,7 +227,7 @@ public class Manager {
         } catch (FileNotFoundException e) {
             System.out.println("> File (script) not found");
         }catch (NullPointerException e){
-            e.printStackTrace();
+            System.out.println("> Smth went wrong in manager");
         }catch (PortUnreachableException e){
             System.out.println("> Port is unreachable");
         }

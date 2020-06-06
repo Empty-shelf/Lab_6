@@ -19,7 +19,7 @@ public class Sender {
     }
     private byte b[] = new byte[32*1024];
 
-    //true - данные отправлены, иначе false
+    //отправка ответа клиенту
     public boolean send(CommandShell command){
         //инициализация выходного потока (место вывода - массив байтов)
         ByteArrayOutputStream output = new ByteArrayOutputStream();

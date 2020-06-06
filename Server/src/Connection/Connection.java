@@ -19,8 +19,9 @@ public class Connection {
     private DatagramChannel channel;
     private SocketAddress addr1;
 
+    //"объект-одиночка"
     private static Connection connection;
-
+   //инициализация/получение "объекта-одиночки"
     public static Connection getInstance(int port) throws IOException {
         if (connection == null) {
             connection = new Connection(port);
@@ -38,7 +39,7 @@ public class Connection {
     public DatagramChannel getChannel() {
         return channel;
     }
-
+    //установление связи
     public boolean getConnection(){
         SocketAddress addr2;
         byte[] b = new byte[]{3,2,1};

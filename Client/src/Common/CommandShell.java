@@ -5,7 +5,6 @@ import Collection.Route;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 
-
 public class CommandShell implements Serializable{
 
     private ArrayDeque<String> mess;
@@ -17,9 +16,7 @@ public class CommandShell implements Serializable{
     public void setMess(ArrayDeque<String> answer){
         this.mess = answer;
     }
-
     public ArrayDeque<String> getMess(){return this.mess;}
-
 
     CommandShell(String name, Route firstArg){
         this.name = name;

@@ -1,12 +1,9 @@
 package Common;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.util.*;
 
+//класс создания оболочек команд
 public class CommandCreator {
-
+    //инициализация объекта, который создает аргумент - элемент коллекции
     private ElementCreator elementCreator = new ElementCreator();
 
     public CommandShell create(String name){

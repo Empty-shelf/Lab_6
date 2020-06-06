@@ -4,7 +4,7 @@ import Collection.Route;
 import java.util.ArrayDeque;
 
 public class AddIfMin extends ACommand {
-    Route arg;
+    private Route arg;
 
     public AddIfMin(String name, Route arg){
         this.name = name;
