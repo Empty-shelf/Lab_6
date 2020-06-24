@@ -1,37 +1,61 @@
 package Collection;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Random;
 
 /**
  * Класс, коллекцией экземпляров которого управляет программа
  */
-
 public class Route implements Comparable<Route>, Serializable {
+
     private int id;
-    private Random random = new Random();
     private String name;
     private Coordinates coordinates;
-    private java.time.LocalDateTime creationDate;
     private Location from;
     private Location to;
     private double distance;
+    private String ownerLogin;
 
-    public Route(double distance, String name, Coordinates coordinates, Location from, Location to) {
+    public String getOwnerLogin() {
+        return ownerLogin;
+    }
+    public void setOwnerLogin(String ownerLogin) {
+        this.ownerLogin = ownerLogin;
+    }
+    public void setId(int id) {this.id = id; }
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    public Coordinates getCoordinates() {
+        return this.coordinates;
+    }
+    public Location getFrom() {
+        return this.from;
+    }
+    public Location getTo() {return this.to;}
+    public double getDistance() {return this.distance;}
+
+    public Route(double distance, String name, Coordinates coordinates, Location from, Location to, String login) {
+        this.coordinates = coordinates;
+        this.ownerLogin = login;
         this.distance = distance;
         this.name = name;
-        this.coordinates = coordinates;
         this.from = from;
         this.to = to;
-        creationDate = LocalDateTime.now();
-        id = random.nextInt();
     }
-    /**
-     * Сравнение объектов
-     * @param route - объект класса Route, с которым сравнивается текущий
-     * @return 1, если текущий объект больше, -1, если текущий объект меньше, 0, если объекты равны
-     */
+
+    public int compareBase(String name, double distance) {
+        int result = this.name.compareTo(name);
+        if (result == 0){
+            if (this.distance - distance > 0) return 1;
+            else if(this.distance - distance < 0) return -1;
+            else return 0;
+        }
+        else return result;
+    }
+
     @Override public int compareTo(Route route) {
         int result = this.name.compareTo(route.name);
         if (result == 0){
@@ -42,22 +66,11 @@ public class Route implements Comparable<Route>, Serializable {
         else return result;
     }
 
-    public int getId(){return this.id;}
-    public void setId(int id){this.id = id;}
-    public String getName(){return this.name;}
-    public Coordinates getCoordinates(){return this.coordinates;}
-    public Location getFrom(){return this.from;}
-    public Location getTo(){return this.to;}
-    public double getDistance(){return this.distance;}
-
-    /**
-     * Строковое представление элемента коллекции
-     * @return String
-     */
-    @Override public String toString(){
-        return this.name + " (" + this.id + ") " + ": from " + this.from.getName() +
-                " to " + this.to.getName() + ", distance - " + this.distance + ", coordinates - (" +
-                this.coordinates.getX() + "," + this.coordinates.getY() + ")";
+    @Override
+    public String toString() {
+        return "Id: " + this.getId() + "\nName: " + this.getName() + "\nCoordinates {x:" +
+                coordinates.getX() + ", y:" + coordinates.getY() + "}\n" + "Distance: " + this.getDistance() +
+                "\nLocation {from:" + this.getFrom().getName() + ", to:" + this.getTo().getName() + "}";
     }
 }
 

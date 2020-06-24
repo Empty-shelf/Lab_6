@@ -1,115 +1,57 @@
 package Common;
 
 import Collection.*;
+import DataBase.Base;
+import DataBase.WorkBase;
+
 import java.io.*;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ExecuteManager {
-    //коллекция
-    private ArrayDeque<Route> ways;
-    private Date dateOfCreation;
+    private Base base = Base.getInstance();
     //массив команд и их описаний
     private String[][] commands;
-    private File csvFile;
     //хранение истории (названий команд)
     private ArrayDeque<String> history;
     //сообщение для передачи клиенту
     private ArrayDeque<String> mess;
     //"объект-одиночка"
     private static ExecuteManager executeManager;
+    //подготовленная строка для запроса
+    private String prState;
+    private ReentrantLock lock = new ReentrantLock();
 
     {
-        ways = new ArrayDeque<>();
+        prState = "INSERT INTO ROUTES " +
+                "(DISTANCE, ROUTE_NAME, X_COORD, Y_COORD, LOC_FROM_NAME, " +
+                "X_COORD_FROM, Y_COORD_FROM, LOC_TO_NAME, X_COORD_TO, Y_COORD_TO, OWNER) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         history = new ArrayDeque<>();
-        commands = new String[16][1];
+        commands = new String[18][1];
         mess = new ArrayDeque<>();
         //сохранение коллекции в файл при отключении jvm
-        Runtime.getRuntime().addShutdownHook(new Thread(this::save));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                base.conDatabase().close();
+            } catch (SQLException e) {
+                System.out.println("Connection didn't close");
+            }
+        }));
     }
 
-    private ExecuteManager(String collPath) {
-        try {
-            if (collPath == null) throw new FileNotFoundException();
-        } catch (FileNotFoundException e) {
-            System.out.println("> File not found (environment variable is empty)");
-            System.exit(1);
-        }
-        File file = new File(collPath);
-        try {
-            if (file.exists()) {
-                this.csvFile = file;
-                load();
-            } else throw new FileNotFoundException();
-        } catch (FileNotFoundException e) {
-            System.out.println("> File not found");
-            System.exit(1);
-        }
-        dateOfCreation = new Date();
+    public ExecuteManager(){
         read();
     }
 
     //инициализация/получение "объекта-одиночки"
-    public static ExecuteManager getInstance(String filepath) {
+    public static ExecuteManager getInstance() {
         if (executeManager == null) {
-            executeManager = new ExecuteManager(filepath);
+            executeManager = new ExecuteManager();
             return executeManager;
         } else return executeManager;
-    }
-
-    /**
-     * Чтение файла, добавление элементов в коллекцию
-     */
-    private void load() {
-        boolean flag = true;
-        try {
-            if (!csvFile.canRead() || !csvFile.canWrite()) throw new SecurityException();
-        } catch (SecurityException e) {
-            System.out.println("> File access denied");
-            System.exit(1);
-        }
-        if (csvFile.length() == 0) {
-            System.out.println("> File is empty");
-            return;
-        }
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile)))) {
-            while (flag) {
-                String[] fields;
-                String s = in.readLine();
-                if (s != null) {
-                    fields = s.trim().split(",", 10);
-                    double distance = Double.parseDouble(fields[0]);
-                    String name = fields[1];
-                    if (name.trim().length() == 0) {
-                        System.out.println("> Empty string entered");
-                        throw new IOException();
-                    }
-                    double x = Double.parseDouble(fields[2]);
-                    Integer y = Integer.valueOf(fields[3]);
-                    String nameLocationFrom = fields[4];
-                    double fromX = Double.parseDouble(fields[5]);
-                    float fromY = Float.parseFloat(fields[6]);
-                    String nameLocationTo = fields[7];
-                    double ToX = Double.parseDouble(fields[8]);
-                    float ToY = Float.parseFloat(fields[9]);
-                    Coordinates coordinates = new Coordinates(x, y);
-                    Location from = new Location(nameLocationFrom, fromX, fromY);
-                    Location to = new Location(nameLocationTo, ToX, ToY);
-                    Route route = new Route(distance, name, coordinates, from, to);
-                    ways.add(route);
-                } else flag = false;
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("> File with data not found");
-            System.exit(1);
-        } catch (NumberFormatException e) {
-            System.out.println("> Invalid argument format in file");
-            System.exit(1);
-        } catch (IOException e) {
-            System.out.println("> Input error");
-            System.exit(1);
-        }
-        sort();
-        System.out.println("> Collection uploaded");
     }
 
     /**
@@ -138,30 +80,34 @@ public class ExecuteManager {
     }
 
     /**
-     * Сортировка коллекции
-     */
-    private void sort() {
-        ArrayDeque<Route> ways2 = new ArrayDeque<>();
-        ways.stream().sorted().forEachOrdered(r -> ways2.add(r));
-        ways = ways2;
-    }
-
-    /**
      * Вывод справки по доступным командам
      */
     public ArrayDeque<String> help() {
-        for (int i = 0; i < 15; i++) {
+        lock.lock();
+        for (int i = 0; i < 17; i++) {
             mess.add("> " + commands[i][0] + " : " + commands[i][1]);
         }
+        lock.unlock();
         return mess;
     }
 
     /**
-     * Вывод информации о коллекции
+     * Вывод информации о таблице
      */
     public ArrayDeque<String> info() {
-        mess.add("Collection type: " + ways.getClass().getName() + ",\nCreation date: " +
-                dateOfCreation + ",\nAmount of elements: " + ways.size());
+        try(Statement st = base.conDatabase().createStatement();
+            ResultSet res = st.executeQuery("SELECT COUNT(*) FROM ROUTES")) {
+            lock.lock();
+            if(res.next()) {
+                if (res.getInt("count")!=0) mess.add("Table's name: routes,\n" +
+                        "Number of elements: " + res.getInt("count"));
+                else mess.add("Table's name: routes,\n" +
+                        "Table is empty");
+            }
+        }catch (SQLException e){
+            mess.add("> Can't get data");
+        }
+        lock.unlock();
         return mess;
     }
 
@@ -169,133 +115,209 @@ public class ExecuteManager {
      * Вывод элементов коллекции в строковом представлении
      */
     public ArrayDeque<String> show() {
-        ways.stream().forEachOrdered((p) -> mess.add(p.toString()));
+        lock.lock();
+        WorkBase.getRoutes().forEach((p) -> mess.add(p.toString()));
+        lock.unlock();
         return mess;
+    }
+
+    //заполнение подготовленного запроса
+    private int stateSet(PreparedStatement p_st, Route route) throws SQLException{
+        p_st.setDouble(1, route.getDistance());
+        p_st.setString(2, route.getName());
+        p_st.setDouble(3, route.getCoordinates().getX());
+        p_st.setInt(4, route.getCoordinates().getY());
+        p_st.setString(5, route.getFrom().getName());
+        p_st.setDouble(6, route.getFrom().getX());
+        p_st.setFloat(7, route.getFrom().getY());
+        p_st.setString(8, route.getTo().getName());
+        p_st.setDouble(9, route.getTo().getX());
+        p_st.setFloat(10, route.getTo().getY());
+        p_st.setString(11, route.getOwnerLogin());
+        return p_st.executeUpdate();
+    }
+
+    /**
+     * Сортировка коллекции
+     */
+    private void sort() {
+        ArrayDeque<Route> routes_2 = new ArrayDeque<>();
+        WorkBase.getRoutes().stream().sorted().forEachOrdered(r -> routes_2.add(r));
+        WorkBase.setRoutes(routes_2);
     }
 
     /**
      * Добавление нового элемента в коллекцию
      */
     public ArrayDeque<String> add(Route route) {
-        ways.add(route);
-        sort();
-        mess.add("> Element added");
+        try(PreparedStatement p_st = base.conDatabase().prepareStatement(prState)) {
+            lock.lock();
+            if(stateSet(p_st, route)!=0) {
+                mess.add("> Element added");
+                WorkBase.getRoutes().add(route);
+                sort();
+            }
+        }catch (SQLException e){
+            mess.add("> Element can't be added, database error");
+        }
+        lock.unlock();
         return mess;
     }
 
     /**
-     * Обновление значения элемента коллекции
+     * Обновление значения элемента
      */
-    public ArrayDeque<String> update(Route element) {
+    public ArrayDeque<String> update(Route route) {
+        try(Statement st = base.conDatabase().createStatement();
+            ResultSet res = st.executeQuery("SELECT COUNT(*) FROM ROUTES WHERE ID="
+                    + route.getId()); PreparedStatement p_st = base.conDatabase().prepareStatement("" +
+                "UPDATE ROUTES SET DISTANCE = ?, ROUTE_NAME = ?, X_COORD = ?, Y_COORD = ?," +
+                " LOC_FROM_NAME = ?, X_COORD_FROM = ?, Y_COORD_FROM = ?, LOC_TO_NAME = ?, " +
+                "X_COORD_TO = ?, Y_COORD_TO = ?, OWNER = ? WHERE ID=" + route.getId())){
+            lock.lock();
+            if (res.next()) {
+                if(res.getInt("count")!=0){
+                    if(stateSet(p_st, route)!=0) {
+                        mess.add("> Element updated");
+                        updateCollection(route);
+                    }else throw new SQLException();
+                }else mess.add("> Element with given id doesn't exist");
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            mess.add("> Can't be updated, database error");
+        }
+        lock.unlock();
+        return mess;
+    }
+
+    private void updateCollection(Route element) {
         ArrayDeque<Route> buf = new ArrayDeque<>();
-        if (ways.stream().anyMatch(r -> r.getId() == element.getId())) {
-            for (Route route : ways) {
+        if (WorkBase.getRoutes().stream().anyMatch(r -> r.getId() == element.getId())) {
+            for (Route route : WorkBase.getRoutes()) {
                 if (route.getId() != element.getId()) {
                     buf.add(route);
                 } else {
                     buf.add(element);
                 }
             }
-            ways = buf;
+            WorkBase.setRoutes(buf);
             sort();
-            mess.add("> Element updated");
-        } else mess.add("> Element with given id doesn't exist");
-        return mess;
+        }
     }
 
     /**
      * Удаление элемента из коллекции (по заданному id)
-     *
      * @param id - идентификационный номер
      */
     public ArrayDeque<String> remove_by_id(int id) {
-        boolean flag = false;
-        for (Route route : ways) {
-            if (route.getId() == id) {
-                ways.remove(route);
-                flag = true;
-                mess.add("> Element removed");
-                break;
+        try(Statement st = base.conDatabase().createStatement()) {
+            lock.lock();
+            int res = st.executeUpdate("DELETE FROM ROUTES " +
+                    "WHERE ID=" + id);
+            if (res!=0) {
+                for (Route route : WorkBase.getRoutes()) {
+                    if (route.getId() == id) {
+                        WorkBase.getRoutes().remove(route);
+                        break;
+                    }
+                }
+                mess.add("> Element is removed");
             }
+            else mess.add("> Element with given id does not exist");
+        }catch (SQLException e){
+            mess.add("> Can't be removed");
         }
-        if (!flag) mess.add("> Element with given id does not exist");
+        lock.unlock();
         return mess;
     }
+
 
     /**
      * Очистка коллекции
      */
     public ArrayDeque<String> clear() {
-        ways.clear();
-        mess.add("> Collection cleared");
+        try(Statement st = base.conDatabase().createStatement()){
+            lock.lock();
+            int res = st.executeUpdate("DELETE * FROM ROUTES");
+            if(res!=0){
+                WorkBase.getRoutes().clear();
+                mess.add("> Table is cleared");
+            }else mess.add("Table has been already empty");
+
+        }catch (SQLException e){
+            mess.add("> Can't be cleared, database error");
+        }
+        lock.unlock();
         return mess;
     }
 
     /**
-     * Возвращение строкового представления элемента в формате csv
-     *
-     * @param route - объект класса Route
-     * @return String
-     */
-    private String write(Route route) {
-        return route.getDistance() + "," + route.getName() + "," +
-                route.getCoordinates().getX() + "," + route.getCoordinates().getY() +
-                "," + route.getFrom().getName() + "," + route.getFrom().getX() + "," +
-                route.getFrom().getY() + "," + route.getTo().getName() + "," + route.getTo().getX() +
-                "," + route.getTo().getY();
-    }
-
-    /**
-     * Сохранение коллекции в файл
-     */
-    private void save() {
-        try (PrintWriter out = new PrintWriter(new FileOutputStream(csvFile))) {
-            for (Route route : ways) {
-                out.println(write(route));
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("> File not found");
-        }
-        System.out.println("> Collection saved");
-    }
-
-    /**
-     * Завершение программы с сохранением коллекции
+     * Завершение программы
      */
     public ArrayDeque<String> exit() {
-        save();
+        lock.lock();
         history.clear();
         mess.add("> Completion of work...");
+        lock.unlock();
         return mess;
     }
 
     /**
-     * Вывод и удаление первого элемента коллекции
+     * Удаление первого элемента коллекции
      */
     public ArrayDeque<String> remove_head() {
-        try {
-            if (ways.isEmpty()) throw new NoSuchElementException();
-            ways.removeFirst();
-            mess.add("> Element removed");
-        } catch (NoSuchElementException e) {
-            mess.add("> Collection is empty");
+        try(Statement st = base.conDatabase().createStatement();
+        ResultSet res = st.executeQuery("SELECT MIN(ID) FROM ROUTES")) {
+            lock.lock();
+            int c = st.executeUpdate("DELETE FROM ROUTES WHERE ID=" + res.getInt("min"));
+            if (c!=0){
+                if (WorkBase.getRoutes().isEmpty()) throw new NoSuchElementException();
+                WorkBase.getRoutes().removeFirst();
+                mess.add("> Element is removed");
+            }
+            else mess.add("> Element with given id does not exist");
+        } catch (SQLException e) {
+            mess.add("Can't be removed");
         }
+        lock.unlock();
         return mess;
     }
 
+
     /**
-     * Добавление нового элемента в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции
+     * Добавление нового элемента в коллекцию, если его значение меньше,
+     * чем у наименьшего элемента этой коллекции
      */
     public ArrayDeque<String> add_if_min(Route route) {
-        try {
-            if (ways.isEmpty()) throw new NoSuchElementException();
-            if (ways.peekFirst().compareTo(route) > 0) {
-                ways.addFirst(route);
-                mess.add("> Element added");
-            } else mess.add("> Element not minimal");
-        } catch (NoSuchElementException e) {
-            mess.add("> Collection is empty, element didn't add");
+        lock.lock();
+        try (Statement st_1 = base.conDatabase().createStatement();
+             Statement st_2 = base.conDatabase().createStatement();
+             Statement st_3 = base.conDatabase().createStatement();
+             ResultSet count = st_1.executeQuery("SELECT COUNT(*) FROM ROUTES");
+             ResultSet res = st_3.executeQuery("SELECT MIN(ID) FROM ROUTES");
+             ResultSet first = st_2.executeQuery("SELECT * FROM ROUTES WHERE ID=" + res.getInt("min"));
+             PreparedStatement p_st = base.conDatabase().prepareStatement(prState)){
+            if(count.next()) {
+                if (count.getInt("count") == 0) throw new NoSuchElementException();
+            }
+            if (first.next()) {
+                if (route.compareBase(first.getString("ROUTE_NAME"),
+                        first.getDouble("DISTANCE")) < 0) {
+                    if (stateSet(p_st, route) != 0) {
+                        WorkBase.getRoutes().add(route);
+                        sort();
+                        mess.add("> Element added");
+                    }
+                } else mess.add("> Element isn't minimal");
+            }
+        } catch (SQLException e) {
+            mess.add("> Can't be added, database error");
+            e.printStackTrace();
+        }catch (NoSuchElementException e){
+            mess.add("> Collection is empty, element haven't been added");
         }
+        lock.unlock();
         return mess;
     }
 
@@ -312,29 +334,33 @@ public class ExecuteManager {
      * @param string - имя команды
      */
     public void addToHistory(String string) {
+        lock.lock();
         if (history.size() < 11) history.add(string);
         else {
             history.pop();
             history.add(string);
         }
+        lock.unlock();
     }
 
     /**
      * Группировака элементов коллекции по значению поля from, вывод количества элементов в каждой группе
      */
     public ArrayDeque<String> group_counting_by_from() {
+        lock.lock();
         //подсчет количества уникальных значений поля from
         ArrayList<String> fr = new ArrayList<>();
-        ways.stream().map(route -> route.getFrom().getName()).distinct().forEachOrdered(k -> fr.add(k));
+        WorkBase.getRoutes().stream().map(route -> route.getFrom().getName()).distinct().forEachOrdered(k -> fr.add(k));
         //подсчет элементов в каждой группе
         int t = 0;
         for (int i = 0; i < fr.size(); i++) {
-            for (Route route : ways) {
+            for (Route route : WorkBase.getRoutes()) {
                 if (route.getFrom().getName().equals(fr.get(i))) t++;
             }
             mess.add(fr.get(i) + " [" + t + "]");
             t = 0;
         }
+        lock.unlock();
         return mess;
     }
 
@@ -343,9 +369,11 @@ public class ExecuteManager {
      *
      * @param str - заданная подстрока
      */
-    public ArrayDeque<String> filter_contains_name(String str) {
-        ways.stream().filter(route -> route.getName().contains(str)).forEachOrdered(route -> mess.add(route.getName()));
+    public ArrayDeque<String> filter_contains_name(String str){
+        lock.lock();
+        WorkBase.getRoutes().stream().filter(route -> route.getName().contains(str)).forEachOrdered(route -> mess.add(route.getName()));
         if (mess.isEmpty()) mess.add("> No matches found");
+        lock.unlock();
         return mess;
     }
 
@@ -353,7 +381,9 @@ public class ExecuteManager {
      * Вывод уникальных значений поля distance
      */
     public ArrayDeque<String> print_unique_distance() {
-        ways.stream().map(route -> route.getDistance()).distinct().forEachOrdered(k -> mess.add(k.toString()));
+        lock.lock();
+        WorkBase.getRoutes().stream().map(route -> route.getDistance()).distinct().forEachOrdered(k -> mess.add(k.toString()));
+        lock.unlock();
         return mess;
     }
 }

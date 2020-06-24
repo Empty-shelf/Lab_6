@@ -1,13 +1,6 @@
 package Connection;
 
-import Common.CommandShell;
-
-import java.io.*;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +18,5 @@ public class ConnectionManager {
 
     public Receiver getReceiver(){return this.receiver;}
     public Sender getSender(){return this.sender;}
-
 
 }

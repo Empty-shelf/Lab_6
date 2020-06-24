@@ -1,6 +1,7 @@
 package Common;
 
 import Collection.*;
+import org.omg.CORBA.UnknownUserException;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -13,7 +14,7 @@ class ElementCreator {
     то на выход получаем элемент с заданным id (например, для команды update), иначе
     id генерируется автоматически
     */
-    Route constructor(int id) {
+    Route constructor(int id, String login) {
         while (true) {
             try {
                 Scanner field = new Scanner(System.in);
@@ -21,7 +22,7 @@ class ElementCreator {
                 double distance = field.nextDouble();
                 if (distance < 2) throw new InputMismatchException();
                 System.out.println("> Input route's name:");
-                System.out.println(field.nextLine());
+                field.nextLine();
                 String name = field.nextLine();
                 if (name.trim().length()==0){
                     System.out.println("> Empty string entered");
@@ -46,14 +47,30 @@ class ElementCreator {
                 double toX = field.nextDouble();
                 System.out.println("> Input y coordinate of location from:");
                 float toY = field.nextFloat();
+                System.out.println("> Confirm your login:");
+                String log = field.nextLine().trim();
+                for(int j=0; j<6; j++){
+                    try {
+                        log = field.nextLine().trim();
+                        if (!log.equals(login)) throw new UnknownUserException();
+                        break;
+                    } catch (UnknownUserException e) {
+                        if(j==5){
+                            System.out.println("Element will be created without owner");
+                            log=null;
+                            break;
+                        }
+                        System.out.println("Incorrect login, try again");
+                    }
+                }
                 Coordinates coordinates = new Coordinates(x, y);
                 Location locationFrom = new Location(locFrom, fromX, fromY);
                 Location locationTo = new Location(locTo, toX, toY);
                 if (id != 0) {
-                    Route route =  new Route(distance, name, coordinates, locationFrom, locationTo);
+                    Route route =  new Route(distance, name, coordinates, locationFrom, locationTo, log);
                     route.setId(id);
                     return route;
-                } else return new Route(distance, name, coordinates, locationFrom, locationTo);
+                } else return new Route(distance, name, coordinates, locationFrom, locationTo, log);
             }catch (InputMismatchException e){
                 System.out.println("> Input error\n\u001B[34mReference:\u001B[0m\n\u001B[31mfraction :\u001B[0m" +
                         " distance \u001B[31m(more than 1)\u001B[0m, x coordinate \u001B[31m(have to be more than -808)" +
@@ -69,7 +86,7 @@ class ElementCreator {
      * @param script - коллекция-скрипт
      * @return объект класса Route
      */
-    Route constructor(int j, ArrayList<String[]> script) throws InputMismatchException{
+    Route constructor(int j, ArrayList<String[]> script, String login) throws InputMismatchException{
         double distance = Double.parseDouble(script.get(j + 1)[0]);
         if (distance < 2) throw new InputMismatchException();
         String name = script.get(j + 2)[0];
@@ -86,13 +103,15 @@ class ElementCreator {
         String locTo = script.get(j + 8)[0];
         double toX = Double.parseDouble(script.get(j + 9)[0]);
         float toY = Float.parseFloat(script.get(j + 10)[0]);
+        String log = script.get(j + 11)[0].trim();
+        if (log != login) log = login;
         Coordinates coordinates = new Coordinates(x, y);
         Location locationFrom = new Location(locFrom, fromX, fromY);
         Location locationTo = new Location(locTo, toX, toY);
         if (script.get(j)[0].equals("update")) {
-            Route route = new Route(distance, name, coordinates, locationFrom, locationTo);
+            Route route = new Route(distance, name, coordinates, locationFrom, locationTo, log);
             route.setId(Integer.parseInt(script.get(j)[1]));
             return route;
-        } else return new Route(distance, name, coordinates, locationFrom, locationTo);
+        } else return new Route(distance, name, coordinates, locationFrom, locationTo, log);
     }
 }

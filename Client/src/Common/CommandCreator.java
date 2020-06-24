@@ -5,27 +5,37 @@ import java.util.*;
 public class CommandCreator {
     //инициализация объекта, который создает аргумент - элемент коллекции
     private ElementCreator elementCreator = new ElementCreator();
+    private CommandShell command;
 
-    public CommandShell create(String name){
+    public CommandShell create(String name, String login){
+        command = new CommandShell(name);
+        command.setLogin(login);
         if (name.equals("add") || name.equals("add_if_min"))
-            return new CommandShell(name, elementCreator.constructor(0));
-        else return new CommandShell(name);
+            command.setFirstArg(elementCreator.constructor(0, login));
+        return command;
     }
 
-    public CommandShell create(String name, int id){
-        if (name.equals("update")) return new CommandShell(name, elementCreator.constructor(id));
-        else return new CommandShell(name, id);
+    public CommandShell create(String name, int id, String login){
+        command = new CommandShell(name);
+        command.setLogin(login);
+        if (name.equals("update")) command.setFirstArg(elementCreator.constructor(id, login));
+        else command.setSecondArg(id);
+        return command;
     }
 
-    public CommandShell create(String name, String arg){
-        return new CommandShell(name, arg);
+    public CommandShell create(String name, String arg, String login){
+        command = new CommandShell(name);
+        command.setLogin(login);
+        command.setThirdArg(arg);
+        return command;
     }
 
     //для работы со скриптом
-    public CommandShell create(String name, int j, ArrayList<String[]> script){
+    public CommandShell create(String name, int j, ArrayList<String[]> script, String login){
+        command = new CommandShell(name);
+        command.setLogin(login);
         if (name.equals("add") || name.equals("add_if_min") || name.equals("update"))
-            return new CommandShell(name, elementCreator.constructor(j, script));
-        else return new CommandShell(name);
+            command.setFirstArg(elementCreator.constructor(j, script, login));
+        return command;
     }
-
 }

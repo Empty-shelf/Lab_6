@@ -13,7 +13,7 @@ public class Sender {
 
     private Connection connection;
 
-    public Connection Connection(){return this.connection;}
+    public Connection getConnection(){return this.connection;}
 
     public Sender(Connection con){
         connection = con;

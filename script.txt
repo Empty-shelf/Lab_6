@@ -9,15 +9,5 @@ forest
 field
 21.7
 90.5
+kate
 show
-update 3
-547.9
-route23
-54.22
-456
-field
-67.3
-88.0
-forest
-21.7
-90.5

@@ -2,6 +2,7 @@ package Connection;
 
 import java.io.IOException;
 import java.net.*;
+import java.time.ZonedDateTime;
 
 public class Connection {
     private static int PORT;
@@ -15,6 +16,9 @@ public class Connection {
 
     SocketAddress getAddr() {
         return addr;
+    }
+    public void setAddr(SocketAddress addr){
+        this.addr = addr;
     }
 
     DatagramSocket getSocket() {
@@ -35,6 +39,7 @@ public class Connection {
         } else return connection;
     }
 
+
     //установление связи
     public boolean getConnection(){
         byte[] b = new byte[]{1, 2, 3};
@@ -43,17 +48,19 @@ public class Connection {
         try {
             //отправка датаграммы
             socket.send(packetOut);
-            //"обнуление" массива
-            for (byte c : b) {
-                c = 0;
-            }
             //на вход
             DatagramPacket packetIn = new  DatagramPacket(b, b.length);
             socket.setSoTimeout(20000);
             socket.receive(packetIn);
-
-            //соединение с адресом и портом (сервером)
+            addr = packetIn.getSocketAddress();
             socket.connect(addr);
+            packetOut.setSocketAddress(addr);
+            //соединение с адресом и портом (сервером)
+            socket.send(packetOut);
+            socket.receive(packetIn);
+            socket.disconnect();
+            SocketAddress addr_2 = packetIn.getSocketAddress();
+            socket.connect(addr_2);
             return true;
         } catch (SocketTimeoutException e) {
             System.out.println("> Server isn't responding");
@@ -61,7 +68,7 @@ public class Connection {
         }catch (PortUnreachableException e){
             return false;
         } catch (IOException e) {
-            System.out.println("> Smth wrong with connection");
+            System.out.println("> Sth wrong with connection");
             return false;
         }
     }

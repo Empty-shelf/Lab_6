@@ -12,13 +12,13 @@ public class ClientMain {
     public static void main (String [] args) {
         try {
             //установление связи с сервером
-            connection = Connection.getInstance(1237, "Localhost");
+            connection = Connection.getInstance(2345, "Localhost");
             manager = Manager.getInstance(new Receiver(connection), new Sender(connection));
         } catch (SocketException e) {
             e.printStackTrace();
         }
+        manager.connect();
         while (true) {
-            //System.out.println("Contact with server: " + connection.getConnection());
             manager.interactiveMod();
         }
     }

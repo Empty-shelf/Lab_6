@@ -1,12 +1,11 @@
 package Connection;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,51 +13,64 @@ public class Connection {
 
     private static final Logger logger = Logger.getLogger(Connection.class.getName());
 
-    private static int PORT;
-    private static String HOST = "localhost";
-    private DatagramChannel channel;
-    private SocketAddress addr1;
+    private static int PORT = 2345;
+    private static DatagramChannel mainChannel;
+    private static SocketAddress addr;
 
-    //"объект-одиночка"
-    private static Connection connection;
-   //инициализация/получение "объекта-одиночки"
-    public static Connection getInstance(int port) throws IOException {
-        if (connection == null) {
-            connection = new Connection(port);
-            return connection;
-        } else return connection;
-    }
-
-    private Connection(int port) throws IOException{
-        PORT = port;
-        addr1 = new InetSocketAddress(PORT);
-        //привязка (локального) адреса к сокету канала
-        channel = DatagramChannel.open().bind(addr1);
+    static{
+        try {
+            mainChannel = DatagramChannel.open().bind(new InetSocketAddress(PORT));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public DatagramChannel getChannel() {
-        return channel;
+        return channel_2;
     }
+
+    private DatagramChannel channel_2;
+
+    public Connection(int port){
+        PORT = port;
+        addr = new InetSocketAddress(PORT);
+        try {
+            channel_2 = DatagramChannel.open();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.getConnection();
+
+    }
+
     //установление связи
     public boolean getConnection(){
-        SocketAddress addr2;
         byte[] b = new byte[]{3,2,1};
         try {
+
+            channel_2 =  DatagramChannel.open();
 
             ByteBuffer buf = ByteBuffer.wrap(b);
 
             //установка времени ожидания для сокета канала
-            channel.socket().setSoTimeout(30000);
+            mainChannel.socket().setSoTimeout(30000);
             //получение адреса клиента и данных
-            addr2 = channel.receive(buf);
-            logger.log(Level.INFO,"Connecting to " + addr2);
-
+            addr = mainChannel.receive(buf);
+            logger.log(Level.INFO,"Connecting to " + addr);
+            //привязка (локального) адреса к сокету канала
+            channel_2.bind(new InetSocketAddress(0));
+            System.out.println(channel_2.socket().getLocalPort());
             //подключение сокета канала к адресу клиента
-            channel.connect(addr2);
+            channel_2.connect(addr);
             //сброс для записи данных
             buf.flip();
-            channel.write(buf);
+            channel_2.write(buf);
+            buf.clear();
+            channel_2.receive(buf);
+            buf.flip();
+            channel_2.write(buf);
             logger.log(Level.INFO, "Completed");
+            channel_2.configureBlocking(false);
             return true;
         } catch (IOException | NullPointerException e) {
             logger.log(Level.SEVERE, "Input/output error", e);
