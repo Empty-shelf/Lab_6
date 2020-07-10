@@ -3,9 +3,9 @@ package DataBase;
 import java.sql.*;
 
 public class Base{
-        private static String url = "jdbc:postgresql://pg:5432/studs";
-        private static String login = "s286534";
-        private static String password = "ujw031";
+        private static String url = "jdbc:postgresql://localhost:5432/Lab_7";
+        private static String login = "postgres";
+        private static String password = "postgres";
         //объект-одиночка
         private static Base base;
         private static Connection con;

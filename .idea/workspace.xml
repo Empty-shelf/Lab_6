@@ -54,27 +54,32 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ИТМО/Программирование/Prog_6" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Lab7 — копия" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\811901\Desktop\моя_лаба_попытка\Server\src" />
-      <recent name="C:\Users\811901\Desktop\моя_лаба_попытка\Client\src" />
-      <recent name="C:\Users\811901\Desktop\Lab_6" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\811901\Desktop\Lab_6\Client\src" />
+      <recent name="C:\Users\811901\Desktop\Lab_6\Server\src" />
+      <recent name="C:\Users\811901\Desktop\Lab_6\Server" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="UI" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="DataBase" />
       <recent name="Work" />
       <recent name="Common" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\811901\Desktop\Lab_6\Client\src" />
-      <recent name="C:\Users\811901\Desktop\Lab_6\Server\src" />
-      <recent name="C:\Users\811901\Desktop\Lab_6\Server" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\811901\Desktop\Lab7\Client\src" />
+      <recent name="C:\Users\811901\Desktop\моя_лаба_попытка\Server\src" />
+      <recent name="C:\Users\811901\Desktop\моя_лаба_попытка\Client\src" />
+      <recent name="C:\Users\811901\Desktop\Lab_6" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -90,19 +95,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Application.Client2">
-    <configuration name="Base" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="DataBase.Base" />
-      <module name="Server" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="DataBase.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Client2" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Work.ClientMain" />
       <module name="Client" />
@@ -123,19 +115,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="Client" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SecurePassword" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="DataBase.SecurePassword" />
+    <configuration name="InfoWindow" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="UI.InfoWindow" />
       <module name="Client" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="DataBase.*" />
+          <option name="PATTERN" value="UI.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -149,6 +134,32 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="Work.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SingleInputWindow" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="UI.SingleInputWindow" />
+      <module name="Client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="UI.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="VisualWindow" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="UI.VisualWindow" />
+      <module name="Client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="UI.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -205,19 +216,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.Client2" />
-      <item itemvalue="Application.Base" />
       <item itemvalue="Application.ClientMain" />
-      <item itemvalue="Application.Main" />
       <item itemvalue="Application.ServerMain" />
-      <item itemvalue="Application.SecurePassword" />
+      <item itemvalue="Application.SingleInputWindow" />
+      <item itemvalue="Application.InfoWindow" />
+      <item itemvalue="Application.VisualWindow" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.ServerMain" />
+        <item itemvalue="Application.VisualWindow" />
         <item itemvalue="Application.ClientMain" />
-        <item itemvalue="Application.SecurePassword" />
-        <item itemvalue="Application.Base" />
-        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.SingleInputWindow" />
+        <item itemvalue="Application.InfoWindow" />
       </list>
     </recent_temporary>
   </component>
@@ -246,7 +257,9 @@
       <workItem from="1592523527127" duration="31967000" />
       <workItem from="1592652996825" duration="4213000" />
       <workItem from="1592660974740" duration="83985000" />
-      <workItem from="1592932774169" duration="17279000" />
+      <workItem from="1592932774169" duration="22324000" />
+      <workItem from="1593601707944" duration="157208000" />
+      <workItem from="1593991283904" duration="4863000" />
     </task>
     <servers />
   </component>
@@ -271,7 +284,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/Client/src/Connection/Receiver.java</url>
-          <line>21</line>
+          <line>20</line>
           <properties class="Connection.Receiver" method="receive">
             <option name="EMULATED" value="true" />
           </properties>
@@ -286,14 +299,6 @@
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/Client/src/Connection/Manager.java</url>
-          <line>62</line>
-          <properties class="Connection.Manager" method="interactiveMod">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/Client/src/Connection/Connection.java</url>
           <line>43</line>
           <properties class="Connection.Connection" method="getConnection">
@@ -303,7 +308,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/Server/src/Work/Commander.java</url>
-          <line>43</line>
+          <line>42</line>
           <properties class="Work.Commander" method="startSession">
             <option name="EMULATED" value="true" />
           </properties>
@@ -311,7 +316,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/Client/src/Work/ClientMain.java</url>
-          <line>11</line>
+          <line>14</line>
           <properties class="Work.ClientMain" method="main">
             <option name="EMULATED" value="true" />
           </properties>
@@ -319,7 +324,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/Server/src/Work/ServerMain.java</url>
-          <line>11</line>
+          <line>12</line>
           <properties class="Work.ServerMain" method="main">
             <option name="EMULATED" value="true" />
           </properties>
@@ -333,24 +338,10 @@
           </properties>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/Client/src/Connection/Manager.java</url>
-          <line>174</line>
-          <properties class="Connection.Manager" method="connect">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="49" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Server/src/Connection/Connection.java</url>
           <line>11</line>
           <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-field">
-          <url>file://$PROJECT_DIR$/Client/src/Connection/Manager.java</url>
-          <line>16</line>
-          <properties field="login" class="Connection.Manager" />
-          <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

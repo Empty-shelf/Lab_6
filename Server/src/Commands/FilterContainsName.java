@@ -1,6 +1,7 @@
 package Commands;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class FilterContainsName extends ACommand {
     String arg;
@@ -11,7 +12,7 @@ public class FilterContainsName extends ACommand {
     }
 
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.filter_contains_name(arg);
     }
 }

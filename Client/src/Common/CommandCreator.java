@@ -1,4 +1,6 @@
 package Common;
+import UI.MultiInputWindow;
+
 import java.util.*;
 
 //класс создания оболочек команд
@@ -7,26 +9,21 @@ public class CommandCreator {
     private ElementCreator elementCreator = new ElementCreator();
     private CommandShell command;
 
-    public CommandShell create(String name, String login){
+    public CommandShell create(String name, String login, String arg, MultiInputWindow window, int id) throws IllegalArgumentException{
         command = new CommandShell(name);
         command.setLogin(login);
-        if (name.equals("add") || name.equals("add_if_min"))
-            command.setFirstArg(elementCreator.constructor(0, login));
-        return command;
-    }
-
-    public CommandShell create(String name, int id, String login){
-        command = new CommandShell(name);
-        command.setLogin(login);
-        if (name.equals("update")) command.setFirstArg(elementCreator.constructor(id, login));
-        else command.setSecondArg(id);
-        return command;
-    }
-
-    public CommandShell create(String name, String arg, String login){
-        command = new CommandShell(name);
-        command.setLogin(login);
-        command.setThirdArg(arg);
+        switch (name){
+            case "update":
+            case "add":
+            case "add_if_min":
+                elementCreator.constructor(id, login, window);
+                command.setFirstArg(elementCreator.getRoute());
+                command.setSecondArg(id);
+            case "remove_by_id":
+                command.setSecondArg(id);
+            case "filter_contains_name":
+                command.setThirdArg(arg);
+        }
         return command;
     }
 

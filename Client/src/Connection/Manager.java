@@ -2,24 +2,34 @@ package Connection;
 
 import Common.CommandCreator;
 import Common.CommandShell;
-import Common.Users;
-import DataBase.SecurePassword;
-import org.omg.CORBA.UnknownUserException;
+import UI.AnswerWindow;
+import UI.InfoWindow;
+import UI.MultiInputWindow;
+import UI.SingleInputWindow;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Manager {
     private String login;
-    private boolean isLogged = false;
-    //отвечает за отправку команды на сервер
     private Sender sender;
     //отвечает за получение ответа от сервера
     private Receiver receiver;
+
+    public Sender getSender(){
+        return sender;
+    }
+
+    public Receiver getReceiver(){
+        return receiver;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     //реализация "объекта-одиночки"
     private static Manager manager;
@@ -34,23 +44,13 @@ public class Manager {
         this.sender = sender;
         //обработка ситуации отключения jvm
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                sender.send(creator.create("exit", login));
-                receiver.receive().getMess().forEach(System.out::println);
-            }catch (PortUnreachableException e){
-                System.out.println("> Port is unreachable");
-            }catch (NullPointerException e){
-                System.out.println("> No answer from server");
-            }
+            sender.send(creator.create("exit", login, "", null, 0));
         }));
     }
 
     //инициализируемая на клиенте и отправляемая на сервер оболочка команды
     private CommandShell com;
-    //строка - команда пользователя (введенная с консоли)
-    private String userCommand = "";
-    //команда пользователя, помещенная в массив (вместе с аргументами)
-    private String[] finalUserCommand;
+
     /*
     контроль рекурсии (коллекция хранит имена файлов,
     содержащих скрипт, которые используются при выполнении одной команды
@@ -58,119 +58,114 @@ public class Manager {
     private ArrayList<String> rec = new ArrayList<>();
     //отвечает за создание оболочки команды, отправляемой на сервер
     private CommandCreator creator = new CommandCreator();
-    private Scanner commandReader = new Scanner(System.in);
+    private SingleInputWindow single_input_window;
+    private MultiInputWindow  multi_input_window;
+    private InfoWindow info_window;
+    private AnswerWindow answer_window;
 
-    public void interactiveMod() {
-        System.out.println("> Ready for work");
-        while (!userCommand.equals("exit")) {
-            if (commandReader.hasNextLine()) {
-                userCommand = commandReader.nextLine();
-            }else continue ;
-            finalUserCommand = userCommand.trim().split(" ", 2);
-            try {
-                if (userCommand.trim().length() == 0) throw new InputMismatchException();
-                if (finalUserCommand[0].equals("exit")) {
-                    commandReader.close();
-                    System.exit(0);
-                }
-                switch (finalUserCommand[0]) {
-                    case "help":
-                    case "info":
-                    case "show":
-                    case "group_counting_by_from":
-                    case "print_unique_distance":
-                    case "history":
-                    case "add_if_min":
-                    case "clear":
-                    case "remove_head":
-                    case "add":
-                        if (!isLogged) throw new NoSuchElementException();
-                        com = creator.create(finalUserCommand[0], login);
+    public void execute(String name) {
+        try{
+        switch (name) {
+            case "help":
+            case "info":
+            case "show":
+            case "group_counting_by_from":
+            case "print_unique_distance":
+            case "history":
+            case "clear":
+            case "remove_head":
+                com = creator.create(name, login, "", null, 0);
+                sender.send(com);
+                answer_window = new AnswerWindow(check());
+                break;
+            case "add":
+            case "add_if_min":
+                multi_input_window = new MultiInputWindow();
+                multi_input_window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        com = creator.create(name, login, "", multi_input_window, 0);
+                        if (com.getFirstArg()==null) return;
                         sender.send(com);
-                        check();
-                        break;
-                    case "update":
-                        if (!isLogged) throw new NoSuchElementException();
+                        answer_window = new AnswerWindow(check());
+                    }
+                });
+                break;
+            case "update":
+                single_input_window = new SingleInputWindow();
+                single_input_window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowDeactivated(WindowEvent e) {
+                        multi_input_window = new MultiInputWindow();
+                        multi_input_window.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosed(WindowEvent e) {
+                                try {
+                                    int id = Integer.parseInt(single_input_window.getString());
+                                    com = creator.create(name, login, "", multi_input_window, id);
+                                    if (com.getFirstArg()==null) return;
+                                    sender.send(com);
+                                    answer_window = new AnswerWindow(check());
+                                } catch (NumberFormatException er) {
+                                    info_window = new InfoWindow(" Input error (id have to be an integer) ", "error");
+                                }
+                            }
+                        });
+                    }
+                });
+                break;
+            case "remove_by_id":
+                single_input_window = new SingleInputWindow();
+                single_input_window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
                         try {
-                            int id = Integer.parseInt(finalUserCommand[1].trim());
-                            com = creator.create(finalUserCommand[0], id, login);
+                            int id = Integer.parseInt(single_input_window.getString());
+                            com = creator.create(name, login,"", null, id);
                             sender.send(com);
-                            check();
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("> Input error (id have to be an integer)");
+                            answer_window = new AnswerWindow(check());
+                        } catch (NumberFormatException er) {
+                            info_window = new InfoWindow(" Input error (id have to be an integer) ", "error");
                         }
-                        break;
-                    case "remove_by_id":
-                        if (!isLogged) throw new NoSuchElementException();
-                        try {
-                            int i = Integer.parseInt(finalUserCommand[1].trim());
-                            com = creator.create(finalUserCommand[0], i, login);
-                            sender.send(com);
-                            check();
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("> Input error (id have to be an integer)");
-                            break;
-                        }
-                    case "filter_contains_name":
-                        if (!isLogged) throw new NoSuchElementException();
-                        com = creator.create(finalUserCommand[0], finalUserCommand[1].trim(), login);
+                    }
+                });
+                break;
+            case "filter_contains_name":
+                single_input_window = new SingleInputWindow();
+                single_input_window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        com = creator.create(name, login, single_input_window.getString(), null, 0);
                         sender.send(com);
-                        check();
-                        break;
-                    case "execute_script":
-                        if (!isLogged) throw new NoSuchElementException();
-                        script(finalUserCommand[1].trim());
-                        break;
-                    case "login":
-                        System.out.println("> Input your login:");
-                        String login_in = commandReader.nextLine().trim();
-                        if (!Users.isRegistered(login_in)){
-                            System.out.println("> User with this login doesn't exist, try again or register");
-                            break;
-                        }
-                        System.out.println("> Input your password:");
-                        String password_in = SecurePassword.generate(commandReader.nextLine().trim());
-                        if (Users.isCorrectPassword(login_in, password_in)){
-                            Users.addLoggedUser(login_in, password_in);
-                            System.out.println("> You have successfully logged in");
-                            login = login_in;
-                            isLogged = true;
-                        }else {
-                            System.out.println("> Incorrect password, input 'login' and try again");
-                        }
-                        break;
-                    case "register":
-                        System.out.println("> Input your login:");
-                        String login_reg = commandReader.nextLine().trim();
-                        while (Users.isRegistered(login_reg)) {
-                            System.out.println("> This login already exists, create new");
-                            login_reg = commandReader.nextLine();
-                        }
-                        if(login_reg.chars().count()>50){
-                            System.out.println("> Login have to be not more than 50 chars");
-                            break;
-                        }
-                        System.out.println("> Input your password:");
-                        String password_reg = SecurePassword.generate(commandReader.nextLine());
-                        Users.addRegisteredUser(login_reg, password_reg);
-                        System.out.println("> You have successfully registered, now you have to login");
-                        break;
-                    default:
-                        System.out.println("> Unidentified command - input 'help' for reference");
-                        break;
-                }
-                } catch (InputMismatchException e) {
-                   System.out.println("Empty string entered (unidentified command) - input 'help' for reference");
-                } catch (NoSuchElementException e){
-                    System.out.println("> You haven't logged yet - input 'login' to do this command");
-                }catch (IndexOutOfBoundsException e) {
-                    System.out.println("> Missing argument");
-                }
+                        answer_window = new AnswerWindow(check());
+                    }
+                });
+                break;
+           /* case "execute_script":
+                single_input_window = new SingleInputWindow();
+                single_input_window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowDeactivated(WindowEvent e) {
+                        script(single_input_window.getString());
+                        info_window = new InfoWindow(" Script is executed ", "info");
+                    }
+                });
+                break;
+
+            */
         }
+
+        } catch (InputMismatchException e) {
+            info_window = new InfoWindow(" Empty string entered (unidentified command) - " +
+                    "input 'help' for reference ", "info");
+        } catch (NoSuchElementException e){
+            info_window = new InfoWindow(" You haven't logged yet - input 'login' to do this command ",
+                    "info");
+        }catch (IndexOutOfBoundsException e) {
+            info_window = new InfoWindow(" Missing argument ", "error");
+        }catch (IllegalArgumentException ignored){}
         com = null;
-    }
+}
 
     public boolean connect(){
         int count = 0;
@@ -199,23 +194,26 @@ public class Manager {
         }
     }
 
-    private void check(){
+    public synchronized ArrayList<String> check(){
         try {
-            receiver.receive().getMess().forEach(System.out::println);
-        }catch (PortUnreachableException e) {
+            return receiver.receive().getMess();
+        }catch (PortUnreachableException | NullPointerException e) {
             try {
                 if (connect()) {
                     sender.send(com);
-                    receiver.receive().getMess().forEach(System.out::println);
-                    System.out.println("> Connection is established");
+
+                    return receiver.receive().getMess();
                 } else throw new PortUnreachableException();
             } catch (PortUnreachableException r) {
                 System.out.println("> Port is unreachable");
+            }catch (NullPointerException r){
+                System.out.println("Server isn't responding");
             }
         }
+        return null;
     }
 
-
+/*
     //выполнение скрипта
     private void script(String file_path){
         File file = new File(file_path);
@@ -226,7 +224,7 @@ public class Manager {
                 }
             }
         }catch (InputMismatchException e){
-            System.out.println("> Recursion cannot work with the same file");
+            info_window = new InfoWindow(" Recursion cannot work with the same file ", "error");
             return;
         }
         rec.add(file.getName());
@@ -282,30 +280,6 @@ public class Manager {
                             sender.send(creator.create(script.get(j)[0], script.get(j)[1].trim(), login));
                             check();
                             break;
-                        case "login":
-                            if (!Users.isRegistered(script.get(j + 1)[0])) {
-                                System.out.println("> User with this login doesn't exist");
-                                throw new InputMismatchException();
-                            }
-                            if (Users.isCorrectPassword(script.get(j + 1)[0], script.get(j + 2)[0])) {
-                                Users.addLoggedUser(script.get(j + 1)[0], script.get(j + 2)[0]);
-                                System.out.println("> You have successfully logged in");
-                                login = script.get(j + 1)[0];
-                                isLogged = true;
-                            } else {
-                                throw new UnknownUserException();
-                            }
-                            j += 2;
-                            break;
-                        case "register":
-                            while (Users.isRegistered(script.get(j + 1)[0])) {
-                                System.out.println("> This login already exists, create new");
-                                throw new InputMismatchException();
-                            }
-                            Users.addRegisteredUser(script.get(j + 1)[0], script.get(j + 2)[0]);
-                            System.out.println("> You have successfully registered");
-                            j += 2;
-                            break;
                         default:
                             System.out.println("> Unidentified command");
                             break;
@@ -326,9 +300,6 @@ public class Manager {
                 } catch (NoSuchElementException e){
                     System.out.println("You haven't logged yet");
                     return;
-                }catch (UnknownUserException e){
-                    System.out.println("> Incorrect password");
-                    return;
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("> Missing argument, script is'n fully executed");
                     return;
@@ -341,4 +312,6 @@ public class Manager {
         }
         rec.clear();
     }
+
+ */
 }

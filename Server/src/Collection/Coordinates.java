@@ -13,6 +13,8 @@ public class Coordinates implements Serializable {
     public Integer getY() {
         return y;
     }
+    public void setX(double x){this.x = x; }
+    public void setY(Integer y){this.y = y;}
 
 
     public Coordinates(double x, Integer y) {
@@ -21,3 +23,4 @@ public class Coordinates implements Serializable {
     }
 
 }
+

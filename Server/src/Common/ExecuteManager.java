@@ -15,9 +15,9 @@ public class ExecuteManager {
     //массив команд и их описаний
     private String[][] commands;
     //хранение истории (названий команд)
-    private ArrayDeque<String> history;
+    private ArrayList<String> history;
     //сообщение для передачи клиенту
-    private ArrayDeque<String> mess;
+    private ArrayList<String> mess;
     //"объект-одиночка"
     private static ExecuteManager executeManager;
     //подготовленная строка для запроса
@@ -29,9 +29,9 @@ public class ExecuteManager {
                 "(DISTANCE, ROUTE_NAME, X_COORD, Y_COORD, LOC_FROM_NAME, " +
                 "X_COORD_FROM, Y_COORD_FROM, LOC_TO_NAME, X_COORD_TO, Y_COORD_TO, OWNER) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        history = new ArrayDeque<>();
-        commands = new String[18][1];
-        mess = new ArrayDeque<>();
+        history = new ArrayList<>();
+        commands = new String[16][1];
+        mess = new ArrayList<>();
         //сохранение коллекции в файл при отключении jvm
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -82,9 +82,9 @@ public class ExecuteManager {
     /**
      * Вывод справки по доступным командам
      */
-    public ArrayDeque<String> help() {
+    public ArrayList<String> help() {
         lock.lock();
-        for (int i = 0; i < 17; i++) {
+        for (int i = 0; i < 15; i++) {
             mess.add("> " + commands[i][0] + " : " + commands[i][1]);
         }
         lock.unlock();
@@ -94,18 +94,20 @@ public class ExecuteManager {
     /**
      * Вывод информации о таблице
      */
-    public ArrayDeque<String> info() {
+    public ArrayList<String> info() {
         try(Statement st = base.conDatabase().createStatement();
             ResultSet res = st.executeQuery("SELECT COUNT(*) FROM ROUTES")) {
             lock.lock();
             if(res.next()) {
-                if (res.getInt("count")!=0) mess.add("Table's name: routes,\n" +
-                        "Number of elements: " + res.getInt("count"));
+                if (res.getInt("count")!=0) {
+                    mess.add(" Table's name: routes, ");
+                    mess.add(" Number of elements: " + res.getInt("count"));
+                }
                 else mess.add("Table's name: routes,\n" +
-                        "Table is empty");
+                        " table is empty");
             }
         }catch (SQLException e){
-            mess.add("> Can't get data");
+            mess.add(" Can't get data ");
         }
         lock.unlock();
         return mess;
@@ -114,7 +116,7 @@ public class ExecuteManager {
     /**
      * Вывод элементов коллекции в строковом представлении
      */
-    public ArrayDeque<String> show() {
+    public ArrayList<String> show() {
         lock.lock();
         WorkBase.getRoutes().forEach((p) -> mess.add(p.toString()));
         lock.unlock();
@@ -141,7 +143,7 @@ public class ExecuteManager {
      * Сортировка коллекции
      */
     private void sort() {
-        ArrayDeque<Route> routes_2 = new ArrayDeque<>();
+        ArrayList<Route> routes_2 = new ArrayList<>();
         WorkBase.getRoutes().stream().sorted().forEachOrdered(r -> routes_2.add(r));
         WorkBase.setRoutes(routes_2);
     }
@@ -149,16 +151,16 @@ public class ExecuteManager {
     /**
      * Добавление нового элемента в коллекцию
      */
-    public ArrayDeque<String> add(Route route) {
+    public ArrayList<String> add(Route route) {
         try(PreparedStatement p_st = base.conDatabase().prepareStatement(prState)) {
             lock.lock();
             if(stateSet(p_st, route)!=0) {
-                mess.add("> Element added");
-                WorkBase.getRoutes().add(route);
+                mess.add(" Element added ");
+                WorkBase.load();
                 sort();
             }
         }catch (SQLException e){
-            mess.add("> Element can't be added, database error");
+            mess.add(" Element can't be added, database error ");
         }
         lock.unlock();
         return mess;
@@ -167,7 +169,7 @@ public class ExecuteManager {
     /**
      * Обновление значения элемента
      */
-    public ArrayDeque<String> update(Route route) {
+    public ArrayList<String> update(Route route) {
         try(Statement st = base.conDatabase().createStatement();
             ResultSet res = st.executeQuery("SELECT COUNT(*) FROM ROUTES WHERE ID="
                     + route.getId()); PreparedStatement p_st = base.conDatabase().prepareStatement("" +
@@ -178,21 +180,21 @@ public class ExecuteManager {
             if (res.next()) {
                 if(res.getInt("count")!=0){
                     if(stateSet(p_st, route)!=0) {
-                        mess.add("> Element updated");
+                        mess.add(" Element updated ");
                         updateCollection(route);
                     }else throw new SQLException();
-                }else mess.add("> Element with given id doesn't exist");
+                }else mess.add(" Element with given id doesn't exist ");
             }
         }catch (SQLException e){
             e.printStackTrace();
-            mess.add("> Can't be updated, database error");
+            mess.add(" Can't be updated, database error ");
         }
         lock.unlock();
         return mess;
     }
 
     private void updateCollection(Route element) {
-        ArrayDeque<Route> buf = new ArrayDeque<>();
+        ArrayList<Route> buf = new ArrayList<>();
         if (WorkBase.getRoutes().stream().anyMatch(r -> r.getId() == element.getId())) {
             for (Route route : WorkBase.getRoutes()) {
                 if (route.getId() != element.getId()) {
@@ -210,7 +212,7 @@ public class ExecuteManager {
      * Удаление элемента из коллекции (по заданному id)
      * @param id - идентификационный номер
      */
-    public ArrayDeque<String> remove_by_id(int id) {
+    public ArrayList<String> remove_by_id(int id) {
         try(Statement st = base.conDatabase().createStatement()) {
             lock.lock();
             int res = st.executeUpdate("DELETE FROM ROUTES " +
@@ -222,11 +224,11 @@ public class ExecuteManager {
                         break;
                     }
                 }
-                mess.add("> Element is removed");
+                mess.add(" Element is removed ");
             }
-            else mess.add("> Element with given id does not exist");
+            else mess.add(" Element with given id does not exist ");
         }catch (SQLException e){
-            mess.add("> Can't be removed");
+            mess.add(" Can't be removed ");
         }
         lock.unlock();
         return mess;
@@ -236,17 +238,17 @@ public class ExecuteManager {
     /**
      * Очистка коллекции
      */
-    public ArrayDeque<String> clear() {
+    public ArrayList<String> clear() {
         try(Statement st = base.conDatabase().createStatement()){
             lock.lock();
             int res = st.executeUpdate("DELETE * FROM ROUTES");
             if(res!=0){
                 WorkBase.getRoutes().clear();
-                mess.add("> Table is cleared");
-            }else mess.add("Table has been already empty");
+                mess.add(" Table is cleared ");
+            }else mess.add(" Table has been already empty ");
 
         }catch (SQLException e){
-            mess.add("> Can't be cleared, database error");
+            mess.add(" Can't be cleared, database error ");
         }
         lock.unlock();
         return mess;
@@ -255,10 +257,10 @@ public class ExecuteManager {
     /**
      * Завершение программы
      */
-    public ArrayDeque<String> exit() {
+    public ArrayList<String> exit() {
         lock.lock();
         history.clear();
-        mess.add("> Completion of work...");
+        mess.add(" Completion of work... ");
         lock.unlock();
         return mess;
     }
@@ -266,19 +268,20 @@ public class ExecuteManager {
     /**
      * Удаление первого элемента коллекции
      */
-    public ArrayDeque<String> remove_head() {
+    public ArrayList<String> remove_head() {
         try(Statement st = base.conDatabase().createStatement();
         ResultSet res = st.executeQuery("SELECT MIN(ID) FROM ROUTES")) {
             lock.lock();
-            int c = st.executeUpdate("DELETE FROM ROUTES WHERE ID=" + res.getInt("min"));
-            if (c!=0){
-                if (WorkBase.getRoutes().isEmpty()) throw new NoSuchElementException();
-                WorkBase.getRoutes().removeFirst();
-                mess.add("> Element is removed");
+            if(res.next()) {
+                int c = st.executeUpdate("DELETE FROM ROUTES WHERE ID=" + res.getInt("min"));
+                if (c != 0) {
+                    if (WorkBase.getRoutes().isEmpty()) throw new NoSuchElementException();
+                    WorkBase.load();
+                    mess.add(" Element is removed ");
+                } else mess.add(" Element with given id does not exist ");
             }
-            else mess.add("> Element with given id does not exist");
         } catch (SQLException e) {
-            mess.add("Can't be removed");
+            mess.add(" Can't be removed, database error ");
         }
         lock.unlock();
         return mess;
@@ -289,33 +292,34 @@ public class ExecuteManager {
      * Добавление нового элемента в коллекцию, если его значение меньше,
      * чем у наименьшего элемента этой коллекции
      */
-    public ArrayDeque<String> add_if_min(Route route) {
+    public ArrayList<String> add_if_min(Route route) {
         lock.lock();
         try (Statement st_1 = base.conDatabase().createStatement();
              Statement st_2 = base.conDatabase().createStatement();
              Statement st_3 = base.conDatabase().createStatement();
              ResultSet count = st_1.executeQuery("SELECT COUNT(*) FROM ROUTES");
              ResultSet res = st_3.executeQuery("SELECT MIN(ID) FROM ROUTES");
-             ResultSet first = st_2.executeQuery("SELECT * FROM ROUTES WHERE ID=" + res.getInt("min"));
              PreparedStatement p_st = base.conDatabase().prepareStatement(prState)){
-            if(count.next()) {
-                if (count.getInt("count") == 0) throw new NoSuchElementException();
-            }
-            if (first.next()) {
-                if (route.compareBase(first.getString("ROUTE_NAME"),
-                        first.getDouble("DISTANCE")) < 0) {
-                    if (stateSet(p_st, route) != 0) {
-                        WorkBase.getRoutes().add(route);
-                        sort();
-                        mess.add("> Element added");
-                    }
-                } else mess.add("> Element isn't minimal");
+            if (res.next()) {
+                ResultSet first = st_2.executeQuery("SELECT * FROM ROUTES WHERE ID=" + res.getInt("min"));
+                if (count.next()) {
+                    if (count.getInt("count") == 0) throw new NoSuchElementException();
+                }
+                if (first.next()) {
+                    if (route.compareBase(first.getString("ROUTE_NAME"),
+                            first.getDouble("DISTANCE")) < 0) {
+                        if (stateSet(p_st, route) != 0) {
+                            WorkBase.load();
+                            mess.add(" Element added ");
+                        }
+                    } else mess.add(" Element isn't minimal ");
+                }
+                first.close();
             }
         } catch (SQLException e) {
-            mess.add("> Can't be added, database error");
-            e.printStackTrace();
+            mess.add(" Can't be added, database error ");
         }catch (NoSuchElementException e){
-            mess.add("> Collection is empty, element haven't been added");
+            mess.add(" Collection is empty, element haven't been added ");
         }
         lock.unlock();
         return mess;
@@ -324,7 +328,7 @@ public class ExecuteManager {
     /**
      * Вывод последних 11 команд (история)
      */
-    public ArrayDeque<String> history() {
+    public ArrayList<String> history() {
         return history;
     }
 
@@ -337,7 +341,7 @@ public class ExecuteManager {
         lock.lock();
         if (history.size() < 11) history.add(string);
         else {
-            history.pop();
+            history.remove(0);
             history.add(string);
         }
         lock.unlock();
@@ -346,7 +350,7 @@ public class ExecuteManager {
     /**
      * Группировака элементов коллекции по значению поля from, вывод количества элементов в каждой группе
      */
-    public ArrayDeque<String> group_counting_by_from() {
+    public ArrayList<String> group_counting_by_from() {
         lock.lock();
         //подсчет количества уникальных значений поля from
         ArrayList<String> fr = new ArrayList<>();
@@ -369,10 +373,10 @@ public class ExecuteManager {
      *
      * @param str - заданная подстрока
      */
-    public ArrayDeque<String> filter_contains_name(String str){
+    public ArrayList<String> filter_contains_name(String str){
         lock.lock();
         WorkBase.getRoutes().stream().filter(route -> route.getName().contains(str)).forEachOrdered(route -> mess.add(route.getName()));
-        if (mess.isEmpty()) mess.add("> No matches found");
+        if (mess.isEmpty()) mess.add(" No matches found ");
         lock.unlock();
         return mess;
     }
@@ -380,7 +384,7 @@ public class ExecuteManager {
     /**
      * Вывод уникальных значений поля distance
      */
-    public ArrayDeque<String> print_unique_distance() {
+    public ArrayList<String> print_unique_distance() {
         lock.lock();
         WorkBase.getRoutes().stream().map(route -> route.getDistance()).distinct().forEachOrdered(k -> mess.add(k.toString()));
         lock.unlock();

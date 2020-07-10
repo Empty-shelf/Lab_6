@@ -2,6 +2,7 @@ package Commands;
 
 import Collection.Route;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class Add extends ACommand {
     private Route arg;
@@ -11,7 +12,7 @@ public class Add extends ACommand {
         this.arg = arg;
     }
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.add(arg);
     }
 }

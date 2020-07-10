@@ -1,6 +1,7 @@
 package Commands;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class RemoveById extends ACommand {
     int arg;
@@ -11,7 +12,7 @@ public class RemoveById extends ACommand {
     }
 
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.remove_by_id(arg);
     }
 }

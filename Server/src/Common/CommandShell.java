@@ -5,12 +5,13 @@ import DataBase.SecurePassword;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class CommandShell implements Serializable{
 
     private String login;
 
-    private ArrayDeque<String> mess;
+    private ArrayList<String> mess;
     private String name;
     private Route firstArg;
     private int secondArg;
@@ -25,10 +26,10 @@ public class CommandShell implements Serializable{
     public void setFirstArg(Route firstArg){this.firstArg = firstArg;}
     public void setSecondArg(int secondArg){this.secondArg = secondArg;}
     public void setThirdArg(String thirdArg){this.thirdArg = thirdArg;}
-    public void setMess(ArrayDeque<String> answer){
+    public void setMess(ArrayList<String> answer){
         this.mess = answer;
     }
-    public ArrayDeque<String> getMess(){return this.mess;}
+    public ArrayList<String> getMess(){return this.mess;}
     public String getName(){return this.name;}
     public Route getFirstArg(){return this.firstArg;}
     public int getSecondArg(){return this.secondArg;}

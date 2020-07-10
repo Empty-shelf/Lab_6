@@ -2,6 +2,7 @@ package Commands;
 
 import Collection.Route;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class AddIfMin extends ACommand {
     private Route arg;
@@ -12,7 +13,7 @@ public class AddIfMin extends ACommand {
     }
 
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.add_if_min(arg);
     }
 }

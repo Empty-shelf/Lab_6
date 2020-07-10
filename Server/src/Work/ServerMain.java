@@ -2,6 +2,7 @@ package Work;
 
 import Common.ExecuteManager;
 import Connection.*;
+import DataBase.WorkBase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,6 +11,7 @@ import java.util.concurrent.ForkJoinTask;
 
 public class ServerMain {
     public static void main(String[] args) {
+        WorkBase.load();
         ForkJoinPool FJPool = new ForkJoinPool();
         ExecutorService cachedPool = Executors.newCachedThreadPool();
         while (true) {

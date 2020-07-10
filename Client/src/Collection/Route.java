@@ -28,14 +28,19 @@ public class Route implements Comparable<Route>, Serializable {
     public String getName() {
         return name;
     }
+    public void setName(String name){this.name = name;}
     public Coordinates getCoordinates() {
         return this.coordinates;
     }
+    public void setCoordinates(Coordinates c){coordinates = c;}
     public Location getFrom() {
         return this.from;
     }
+    public void setFrom(Location from){this.from = from;}
     public Location getTo() {return this.to;}
+    public void setTo(Location to){this.to = to;}
     public double getDistance() {return this.distance;}
+    public void setDistance(double distance){this.distance = distance;}
 
     public Route(double distance, String name, Coordinates coordinates, Location from, Location to, String login) {
         this.coordinates = coordinates;
@@ -68,9 +73,9 @@ public class Route implements Comparable<Route>, Serializable {
 
     @Override
     public String toString() {
-        return "Id: " + this.getId() + "\nName: " + this.getName() + "\nCoordinates {x:" +
-                coordinates.getX() + ", y:" + coordinates.getY() + "}\n" + "Distance: " + this.getDistance() +
-                "\nLocation {from:" + this.getFrom().getName() + ", to:" + this.getTo().getName() + "}";
+        return " Id: " + this.getId() + ", name: " + this.getName() + ", coordinates {x:" +
+                coordinates.getX() + ", y:" + coordinates.getY() + "}, " + "distance: " + this.getDistance() +
+                " location {from:" + this.getFrom().getName() + ", to:" + this.getTo().getName() + "}";
     }
 }
 

@@ -1,84 +1,65 @@
 package Common;
 
 import Collection.*;
+import UI.AnswerWindow;
+import UI.InfoWindow;
+import UI.MultiInputWindow;
 import org.omg.CORBA.UnknownUserException;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 //создание аргумента, который является элементом коллекции
 class ElementCreator {
-    /*
-    "конструктор" элемента через ввод с консоли (если id указан - т.е. он не равен 0,
-    то на выход получаем элемент с заданным id (например, для команды update), иначе
-    id генерируется автоматически
-    */
-    Route constructor(int id, String login) {
-        while (true) {
-            try {
-                Scanner field = new Scanner(System.in);
-                System.out.println("> Input distance:");
-                double distance = field.nextDouble();
-                if (distance < 2) throw new InputMismatchException();
-                System.out.println("> Input route's name:");
-                field.nextLine();
-                String name = field.nextLine();
-                if (name.trim().length()==0){
-                    System.out.println("> Empty string entered");
-                    throw new InputMismatchException();
-                }
-                System.out.println("> Input x coordinate:");
-                double x = field.nextDouble();
-                if (x <= -808) throw new InputMismatchException();
-                System.out.println("> Input y coordinate:");
-                Integer y = field.nextInt();
-                System.out.println("> Input name of location from:");
-                field.nextLine();
-                String locFrom = field.nextLine();
-                System.out.println("> Input x coordinate of location from:");
-                double fromX = field.nextDouble();
-                System.out.println("> Input y coordinate of location from:");
-                float fromY = field.nextFloat();
-                System.out.println("> Input name of location to:");
-                field.nextLine();
-                String locTo = field.nextLine();
-                System.out.println("> Input x coordinate of location to:");
-                double toX = field.nextDouble();
-                System.out.println("> Input y coordinate of location from:");
-                float toY = field.nextFloat();
-                System.out.println("> Confirm your login:");
-                String log = field.nextLine().trim();
-                for(int j=0; j<6; j++){
-                    try {
-                        log = field.nextLine().trim();
-                        if (!log.equals(login)) throw new UnknownUserException();
-                        break;
-                    } catch (UnknownUserException e) {
-                        if(j==5){
-                            System.out.println("Element will be created without owner");
-                            log=null;
-                            break;
-                        }
-                        System.out.println("Incorrect login, try again");
-                    }
-                }
-                Coordinates coordinates = new Coordinates(x, y);
-                Location locationFrom = new Location(locFrom, fromX, fromY);
-                Location locationTo = new Location(locTo, toX, toY);
-                if (id != 0) {
-                    Route route =  new Route(distance, name, coordinates, locationFrom, locationTo, log);
-                    route.setId(id);
-                    return route;
-                } else return new Route(distance, name, coordinates, locationFrom, locationTo, log);
-            }catch (InputMismatchException e){
-                System.out.println("> Input error\n\u001B[34mReference:\u001B[0m\n\u001B[31mfraction :\u001B[0m" +
-                        " distance \u001B[31m(more than 1)\u001B[0m, x coordinate \u001B[31m(have to be more than -808)" +
-                        "" + "\u001B[0m, coordinates of locations(from/to)\n\u001B[31minteger :\u001B[0m y coordinate\n"+
-                        "\u001B[31mstring (not null) :\u001B[0m route's name (not empty), locations'(from/to) names");
-            }
+    private Route route;
+
+    public Route getRoute() {
+        try {
+            return route;
+        }finally {
+            route = null;
         }
     }
+
+    void constructor(int id, String login, MultiInputWindow window) throws IllegalArgumentException{
+        try {
+            double distance = Double.parseDouble(window.getDistance());
+            if (distance < 2) {
+                InfoWindow w = new InfoWindow(" Distance have to be more than 1 ", "error");
+                return;
+            }
+            String name = window.getName();
+            if (name.trim().length() == 0) {
+                InfoWindow w = new InfoWindow(" Route's name can't be empty ", "error");
+                return;
+            }
+            double x = Double.parseDouble(window.getCoord_x());
+            if (x <= -808) {
+                InfoWindow w = new InfoWindow(" X coordinate have to be more than -808 ", "error");
+                return;
+            }
+            Integer y = Integer.valueOf(window.getCoord_y());
+            String locFrom = window.getLoc_from();
+            double fromX = Double.parseDouble(window.getFrom_x());
+            float fromY = Float.parseFloat(window.getFrom_y());
+            String locTo = window.getLoc_to();
+            double toX = Double.parseDouble(window.getTo_x());
+            float toY = Float.parseFloat(window.getTo_y());
+            Coordinates coordinates = new Coordinates(x, y);
+            Location locationFrom = new Location(locFrom, fromX, fromY);
+            Location locationTo = new Location(locTo, toX, toY);
+            if (id != 0) {
+                route = new Route(distance, name, coordinates, locationFrom, locationTo, login);
+                route.setId(id);
+            } else route = new Route(distance, name, coordinates, locationFrom, locationTo, login);
+        }catch (InputMismatchException | NumberFormatException er){
+            InfoWindow w = new InfoWindow(" Input error, check it ", "error");
+        }
+    }
+
 
     /**
      * Метод для создания элемента коллекции (использование данных скрипта)

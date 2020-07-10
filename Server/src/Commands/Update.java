@@ -3,6 +3,7 @@ package Commands;
 import Collection.Route;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class Update extends ACommand {
     Route arg;
@@ -13,7 +14,7 @@ public class Update extends ACommand {
     }
 
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.update(arg);
     }
 }

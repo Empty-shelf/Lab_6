@@ -1,6 +1,9 @@
 package Work;
 
 import Connection.*;
+import UI.LoginWindow;
+import UI.MainWindow;
+import sun.rmi.runtime.Log;
 
 import java.net.SocketException;
 
@@ -18,9 +21,16 @@ public class ClientMain {
             e.printStackTrace();
         }
         manager.connect();
-        while (true) {
-            manager.interactiveMod();
-        }
+        LoginWindow window = new LoginWindow();
+        do {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (!LoginWindow.isLogged);
+        manager.setLogin(LoginWindow.getLogin());
+        MainWindow mainWindow = new MainWindow(LoginWindow.getLogin(), manager);
     }
 }
 

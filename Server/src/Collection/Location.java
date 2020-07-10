@@ -20,6 +20,18 @@ public class Location implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
     public Location(String name, double x, float y) {
         this.x = x;
         this.y = y;

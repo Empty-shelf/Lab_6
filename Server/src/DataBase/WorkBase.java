@@ -8,17 +8,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class WorkBase {
-    private static ArrayDeque<Route> routes = new ArrayDeque<>();
+    private static ArrayList<Route> routes = new ArrayList<>();
 
-    public static ArrayDeque<Route> getRoutes(){
+    public static synchronized ArrayList<Route> getRoutes(){
         return routes;
     }
-    public static void setRoutes(ArrayDeque<Route> r){routes = r;}
+    public static synchronized void setRoutes(ArrayList<Route> r){routes = r;}
 
     //загрузка данных
-    static {
+    public static void load(){
+        ArrayList<Route> routes_2 = new ArrayList<>();
         try(Statement st = Base.getInstance().conDatabase().createStatement();
             ResultSet res = st.executeQuery("SELECT * FROM ROUTES")) {
             while (res.next()) {
@@ -33,8 +35,9 @@ public class WorkBase {
                 String ownerLogin = res.getString("OWNER");
                 Route route = new Route(distance, name, coordinates, from, to, ownerLogin);
                 route.setId(id);
-                routes.add(route);
+                routes_2.add(route);
             }
+            setRoutes(routes_2);
         }catch (SQLException e){
             e.printStackTrace();
         }

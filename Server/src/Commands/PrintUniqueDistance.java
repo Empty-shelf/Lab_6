@@ -1,6 +1,7 @@
 package Commands;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class PrintUniqueDistance extends ACommand {
 
@@ -9,7 +10,7 @@ public class PrintUniqueDistance extends ACommand {
     }
 
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.print_unique_distance();
     }
 }

@@ -1,6 +1,7 @@
 package Commands;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class RemoveHead extends ACommand {
 
@@ -9,7 +10,7 @@ public class RemoveHead extends ACommand {
     }
 
     @Override
-    public ArrayDeque<String> execute() {
+    public ArrayList<String> execute() {
         return manager.remove_head();
     }
 }
